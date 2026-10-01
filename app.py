@@ -200,7 +200,7 @@ if st.session_state.step == 0:
     st.write("Isi data diri di bawah ini untuk memulai perjalanan mengenal diri sendiri:")
     
     with st.form("user_identity_form"):
-        name_input = st.text_input("Nama Lengkap / Nama Panggilan", placeholder="Contoh: Vektor Zero")
+        name_input = st.text_input("Nama Lengkap / Nama Panggilan", placeholder="Contoh: Andi")
         dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", placeholder="Contoh: 17/08/2004")
         
         submitted_intro = st.form_submit_button("🔮 MULAI PERJALANAN MENEMUKAN DIRI", use_container_width=True)
