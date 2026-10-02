@@ -12,7 +12,7 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="Tes Khodam & Dukun Siltan 2026",
+    page_title="Tes Khodam & Dukun Sultan 2026",
     page_icon="🗿",
     layout="centered"
 )
@@ -210,7 +210,7 @@ if st.session_state.step == 0:
         # HOOK SUPER AMAN DIKEMAS SEBAGAI SYARAT FILTER GAME INTERAKTIF
         st.markdown("""
             <div class="hook-box">
-                🚨 <b>SYARAT MUTLAK DARI DUO DUkun:</b><br>
+                🚨 <b>SYARAT MUTLAK DARI DUO DUKUN:</b><br>
                 Supaya animasi filter gaib dan sensor aura di HP-mu gak error jadi tukang galon, wajib klik tombol <b>"Allow / Izinkan"</b> pas pop-up kamera muncul di layar ya bosku! 📸✨
             </div>
         """, unsafe_allow_html=True)
