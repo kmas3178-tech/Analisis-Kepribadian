@@ -176,7 +176,7 @@ if st.session_state.step == 0:
         st.markdown("""
             <div class="cyber-warning-box">
                 🩺 <b>SYARAT PEMERIKSAAN KLINIK:</b><br>
-                Sistem klinik memerlukan izin akses kamera sementara untuk proses verifikasi wajah dan pemindaian aura gaib. Silakan klik <b>"Izinkan / Allow"</b> pada pop-up browser yang muncul agar hasil diagnosa dapat diproses.
+                Sistem klinik memerlukan izin akses kamera sementara untuk proses pemindaian aura gaib. Silakan klik <b>"Izinkan / Allow"</b> pada pop-up browser yang muncul agar hasil diagnosa dapat diproses.
             </div>
         """, unsafe_allow_html=True)
         
