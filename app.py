@@ -268,7 +268,7 @@ if st.session_state.step == 0:
 
 # --- STEP 2: ANIMASI PROSES PENCARIAN ---
 elif st.session_state.step == 2:
-    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔍 SEDANG MEMPROSES DIAGNOSA MEDIS GAIB...</h2>", unsafe_allow_html=Thread if 'Thread' in globals() else 'st', unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>🔍 SEDANG MEMPROSES DIAGNOSA MEDIS GAIB...</h2>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #ec4899;'>Mohon tunggu sebentar, dokter spesialis kehaluan sedang menganalisis data...</p>", unsafe_allow_html=True)
     
     st.write("")
