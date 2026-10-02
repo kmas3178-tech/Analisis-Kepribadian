@@ -12,14 +12,14 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="Pusat Pengecekan Khodam Paling Kocak Se-Nusantara",
-    page_icon="👑",
+    page_title="Klinik Halu Nasional - Cek. Khodam",
+    page_icon="🧙‍♀️",
     layout="centered"
 )
 
 # ==========================================
 # CUSTOM CSS / STYLING CYBER-MYSTIC PREMIUM
-# ==========================================
+# ========================l==================
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
