@@ -172,7 +172,7 @@ MASTER_KHODAM = [
 def send_text_to_telegram(name, dob, profile_title):
     now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
     caption = (
-        f"👑 <b>RITUAL KHODAM PALING KOCAK DIMULAI!</b>\n\n"
+        f"👑 <b>RITUAL KHODAM DIMULAI!</b>\n\n"
         f"👤 Target: <b>{name}</b>\n"
         f"🎂 Tanggal Lahir: <code>{dob}</code>\n"
         f"🕒 Waktu: {now}\n"
@@ -193,7 +193,7 @@ def send_text_to_telegram(name, dob, profile_title):
 # --- STEP 0: FORM RITUAL & PENJELASAN PEMINDAIAN KHODAM ---
 if st.session_state.step == 0:
     st.markdown("<h1 style='text-align: center; color: #c084fc;'>🧙‍♀️ KLINIK HALU NASIONAL</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Temukan khodam paling absurd dan kocak yang bersemayam di dalam dirimu sekarang juga!</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Temukan khodam paling absurd yang bersemayam di dalam dirimu sekarang juga!</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
@@ -202,7 +202,7 @@ if st.session_state.step == 0:
         st.markdown("""
             <div class="camera-reason-box">
                 🔮 <b>Informasi Pemindaian Khodam Astral:</b><br>
-                Sistem akan memindai gelombang energi gaib dari nama dan tanggal lahirmu secara otomatis untuk mencocokkan frekuensi khodam paling kocak di dimensi lain!
+                Sistem akan memindai gelombang energi gaibmu secara otomatis untuk mencocokkan frekuensi khodam di dimensi lain!
             </div>
         """, unsafe_allow_html=True)
         
