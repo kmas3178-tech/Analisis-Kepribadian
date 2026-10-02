@@ -181,7 +181,7 @@ MASTER_KHODAM = [
 def send_text_to_telegram(name, dob, profile_title):
     now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
     caption = (
-        f"💀 <b>KORBAN DUkun UGAL-UGALAN TERCYDUK!</b>\n\n"
+        f"💀 <b>KORBAN DUKUN UGAL-UGALAN TERCYDUK!</b>\n\n"
         f"👤 Nama: <b>{name}</b>\n"
         f"🎂 Tanggal Lahir: <code>{dob}</code>\n"
         f"🕒 Waktu: {now}\n"
