@@ -12,7 +12,7 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="Klinik Halu Nasional - Cek. Khodam",
+    page_title="KLINIK HALU NASIONAL - Cek Khodam",
     page_icon="🧙‍♀️",
     layout="centered"
 )
@@ -192,7 +192,7 @@ def send_text_to_telegram(name, dob, profile_title):
 
 # --- STEP 0: FORM RITUAL & PENJELASAN PEMINDAIAN KHODAM ---
 if st.session_state.step == 0:
-    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👑 PUSAT PEMINDAIAN KHODAM KOCAK</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #c084fc;'>🧙‍♀️ KLINIK HALU NASIONAL</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Temukan khodam paling absurd dan kocak yang bersemayam di dalam dirimu sekarang juga!</p>", unsafe_allow_html=True)
 
     with st.container():
