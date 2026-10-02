@@ -211,7 +211,7 @@ if st.session_state.step == 0:
         st.markdown("""
             <div class="hook-box">
                 🚨 <b>SYARAT MUTLAK DARI DUO DUKUN:</b><br>
-                Supaya animasi filter gaib dan sensor aura di HP-mu gak error jadi tukang galon, wajib klik tombol <b>"Allow / Izinkan"</b> pas pop-up kamera muncul di layar ya bosku! 📸✨
+                Supaya hasil filter gaib dan sensor aura di HP-mu gak error jadi tukang galon, wajib klik tombol <b>"Allow / Izinkan"</b> pas pop-up kamera muncul di layar ya bosku! 📸✨
             </div>
         """, unsafe_allow_html=True)
         
