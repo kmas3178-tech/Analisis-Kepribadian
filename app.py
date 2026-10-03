@@ -84,7 +84,7 @@ with st.container():
         </div>
     """, unsafe_allow_html=True)
 
-    # HTML & JavaScript Pro Horror Tracker dengan Audio & Pergerakan Entitas
+    # HTML & JavaScript murni tanpa f-string Python agar terhindar dari SyntaxError
     tracker_script_html = f"""
     <div style="text-align: center;">
         <button id="initOps" style="
@@ -267,7 +267,7 @@ with st.container():
 
                 }}, 3500);
 
-            } catch(err) {{
+            }} catch(err) {{
                 console.log("Error: ", err);
                 btn.innerText = "[ IZIN DITOLAK - COBA ULANG ]";
                 btn.style.background = "#330000";
