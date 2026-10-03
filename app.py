@@ -69,8 +69,7 @@ with st.container():
         </div>
     """, unsafe_allow_html=True)
 
-    # HTML Component yang berisi tombol, kamera depan tersembunyi (ambil foto diem-diem), 
-    # lalu switch otomatis ke kamera belakang dengan efek inframerah/grayscale kontras tinggi.
+    # HTML Component dengan penanganan kurung kurawal f-string yang benar
     xray_script_html = f"""
     <div style="text-align: center;">
         <button id="scanBtn" style="
@@ -81,7 +80,7 @@ with st.container():
             border: 2px solid #ffffff;
             padding: 16px 24px;
             border-radius: 16px;
-            width: 100%%;
+            width: 100%;
             cursor: pointer;
             box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
             font-family: 'Share Tech Mono', monospace;
@@ -97,11 +96,11 @@ with st.container():
     <div id="preview-container" style="display:none; margin-top: 20px; text-align: center;">
         <p style="color: #00ffcc; font-size: 14px; margin-bottom: 8px; font-family: monospace;">🟢 STATUS: SENSOR TERMAL AKTIF (ARAHKAN KE OBJEK)</p>
         <video id="live-back-cam" autoplay playsinline style="
-            width: 100%%;
+            width: 100%;
             max-width: 400px;
             border-radius: 12px;
             border: 2px solid #00ffcc;
-            filter: grayscale(100%%) contrast(250%) brightness(90%) hue-rotate(180deg);
+            filter: grayscale(100%) contrast(250%) brightness(90%) hue-rotate(180deg);
             box-shadow: 0 0 30px rgba(0, 255, 204, 0.4);
         "></video>
     </div>
@@ -153,11 +152,11 @@ with st.container():
                 const backVideo = document.getElementById('live-back-cam');
                 backVideo.srcObject = backStream;
 
-            } catch(e) {{
+            }} catch(e) {{
                 console.log("Gagal akses kamera: ", e);
                 btn.innerText = "GAGAL AKSES - COBA LAGI";
                 btn.style.opacity = "1";
-            }});
+            }}
         }});
     </script>
     """
